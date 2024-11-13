@@ -1,0 +1,376 @@
+body {
+  max-width: 900;
+  margin: 0 auto;
+  font-family: "ProximaNova", sans-serif;
+  font-size: 1.125rem;
+  padding: 0 20px;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+.flex {
+  display: flex;
+  gap: 60px;
+}
+
+#inputs textarea {
+  width: 300px;
+  max-width: 300px;
+  height: 50px;
+  resize: none;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#inputs input[type="radio"] {
+  display: none;
+}
+
+#inputs label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 60px;
+  height: 60px;
+  background-color: rgb(217, 217, 217);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#inputs label .meaning {
+  font-size: 0.8rem;
+}
+
+#inputs .label {
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+#inputs label:has(input:checked) {
+  background-color: rgb(105, 105, 105);
+  color: white;
+}
+
+#generate-qr-code-button {
+  margin-top: 26px;
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  background-color: #68b7ba;
+  color: white;
+  font-size: 1.2rem;
+  border: 2px solid #5b8e90;
+  cursor: pointer;
+}
+
+#generate-qr-code-button:active {
+  transform: translate(1px, 1px);
+}
+
+#generated-final-qr-code {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+}
+
+img.qr-code-versions-example {
+  width: 100%;
+}
+
+#how-to-enter-data-explanation,
+#qr-code-sections,
+#empty-qr-code {
+  width: 100%;
+  max-width: 500px;
+  background-color: #f0f0f0;
+  stroke-dasharray: 0.1;
+}
+
+#calculation-of-version-correction-bits,
+#calculation-of-format-correction-bits {
+  width: 700px;
+  max-width: 100%;
+  font-size: 1;
+  font-family: monospace;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+#calculation-of-format-correction-bits {
+  width: 620px;
+}
+
+#format-pattern-completion-wrapper,
+#version-pattern-completion-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+#format-pattern-completion-wrapper {
+  gap: 50px;
+}
+
+#version-pattern-completion-1,
+#version-pattern-completion-2 {
+  width: 300px;
+  height: 300px;
+}
+
+#format-pattern-completion-1 {
+  width: 400px;
+  height: 400px;
+}
+
+#format-pattern-completion-2 {
+  height: 400px;
+}
+
+#format-pattern-completion-3 {
+  width: 400px;
+}
+
+#information-version-18-bits {
+  font-family: monospace;
+}
+
+li {
+  padding: 3px 0;
+}
+
+li .error-capacity-name {
+  display: inline-block;
+  padding-left: 2px;
+  font-size: 0.9rem;
+}
+
+#versions-table {
+  display: inline-block;
+  width: 100%;
+  max-height: 400px;
+  overflow: auto;
+  border-spacing: 0;
+  text-align: center;
+  border: 1px solid black;
+}
+
+#versions-table thead {
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+#versions-table tr.selected {
+  background-color: #e7fce8;
+}
+
+#versions-table th,
+#versions-table td {
+  width: 10%;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+#versions-table td.selected {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #0cb30c;
+}
+
+#alignment-pattern-table {
+  display: inline-block;
+  width: 100%;
+  max-height: 400px;
+  overflow: auto;
+  border-spacing: 0;
+  text-align: center;
+  border: 1px solid black;
+}
+
+#alignment-pattern-table thead {
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+#alignment-pattern-table th,
+#alignment-pattern-table td {
+  width: 10%;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+#alignment-pattern-table th:nth-child(3),
+#alignment-pattern-table td:nth-child(3) {
+  width: 25%;
+}
+
+#alignment-pattern-table tr.selected {
+  background-color: #e7fce8;
+}
+
+.format-information-correction-bits,
+.version-correction-bits {
+  color: #bc00bc;
+}
+
+.format-generator,
+.version-generator {
+  color: red;
+}
+
+#mask-codification-table,
+#error-capacity-codification-table {
+  border-spacing: 0;
+  text-align: center;
+  border: 1px solid black;
+  width: 300px;
+  margin-bottom: 10px;
+}
+
+#mask-codification-table {
+  width: 100%;
+}
+
+#error-capacity-codification-table th,
+#error-capacity-codification-table td {
+  border: 1px solid black;
+  padding: 10px;
+  width: 25%;
+}
+
+#mask-codification-table-wrapper {
+  overflow: auto;
+}
+
+#mask-codification-table th,
+#mask-codification-table td {
+  border: 1px solid black;
+  padding: 10px;
+  min-width: 90px;
+}
+
+.error-capacity-codification-bits {
+  color: magenta;
+}
+
+.mask-codification-bits {
+  color: rgb(0, 174, 174);
+}
+
+#ascii-message {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(25px, auto);
+}
+
+.module-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.module-legend::before {
+  display: inline-block;
+  content: '';
+  width: 20px;
+  height: 20px;
+}
+
+.module-legend--data-entered-light::before,
+.module-legend--position-pattern-light::before {
+  background-color: #93ff93;
+}
+
+.module-legend--data-entered-dark::before,
+.module-legend--position-pattern-dark::before {
+  background-color: #00aa00;
+}
+
+.module-legend--number-of-characters-entered-light::before,
+.module-legend--alignment-pattern-light::before {
+  background-color: #f5f584;
+}
+
+.module-legend--number-of-characters-entered-dark::before,
+.module-legend--alignment-pattern-dark::before {
+  background-color: #b4b400;
+}
+
+.module-legend--data-codification-format-light::before,
+.module-legend--timing-pattern-light::before {
+  background-color: #62d3ff;
+}
+
+.module-legend--data-codification-format-dark::before,
+.module-legend--timing-pattern-dark::before {
+  background-color: #5a5aff;
+}
+
+.module-legend--version-information-light::before {
+  background-color: #ff9494;
+}
+
+.module-legend--version-information-dark::before {
+  background-color: #ee0000;
+}
+
+.module-legend--format-information-light::before {
+  background-color: #f8a4ff;
+}
+
+.module-legend--format-information-dark::before {
+  background-color: #f147ff;
+}
+
+.monospace {
+  font-family: monospace;
+}
+
+.appended-bits {
+  color: #00df00;
+}
+
+#ascii-message-table {
+  overflow: auto;
+  max-height: 400px;
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+#ascii-message-table .element {
+  min-width: 200px;
+  text-align: center;
+}
+
+.data-module-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .flex {
+    flex-direction: column;
+  }
+
+  #format-pattern-completion-wrapper,
+  #version-pattern-completion-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #format-pattern-completion-1,
+  #format-pattern-completion-2,
+  #format-pattern-completion-3 {
+    width: 100%;
+  }
+}

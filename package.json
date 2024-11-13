@@ -1,0 +1,21 @@
+{
+  "name": "qr-code",
+  "version": "1.0.0",
+  "description": "App that generates QR Codes and explains how it was done step by step.",
+  "author": "Jaime Martín Martín",
+  "scripts": {
+    "start": "parcel src/index.html --open",
+    "build": "parcel build src/index.html --no-source-maps --public-url /codigo-qr/",
+    "clean": "rm -rf dist .parcel-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaimemartinmartin15/QrCode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jaimemartinmartin15/QrCode/issues"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  }
+}

@@ -32,6 +32,9 @@ import {
 } from './colors';
 import { CSS_CLASSES, CSS_IDS } from './css-selectors';
 import { ELEMENTS } from './elements';
+import { EXPONENTIALS_TABLE } from './galois-field';
+import { applyMask, DATA_MASKS_PATTERNS, evaluateQrCodeAfterMaskApplied, EXCLUDE_FROM_MASK_COLOR } from './masking';
+import { QR_CODE_INFO } from './qr-code-info';
 import {
   paintModulesForAllAlignmentPatterns,
   paintModulesForAllFormatPatterns,
@@ -42,13 +45,16 @@ import {
 } from './qr-code-painters';
 import {
   applyXOR,
-  convertAsciiToBinary,
+  asciiToBinary,
   createQrCodeMatrix,
   getMessageLengthAsBinary,
   getPaddingCodewords,
+  numberToBinary,
+  paintModules,
   paintSvgQrCode,
+  splitInBytes,
 } from './qr-code-utils';
-import { QR_CODE_VERSIONS } from './qr-code-versions';
+import { divideBinaryPolinomials, GENERATOR_POLYNOMIALS } from './reed-salomon';
 import {
   createAlignmentPatternsTable,
   createVersionsTable,
@@ -71,11 +77,11 @@ function readInputs() {
 
 ELEMENTS.GENERATE_QR_CODE_BUTTON.addEventListener('click', () => {
   const { message, errorCapacity } = readInputs();
-  generateQrCode(message, errorCapacity);
+  generateQrCode2(message, errorCapacity);
 });
 
 function generateQrCode(message, errorCapacity) {
-  const qrCodeVersion = QR_CODE_VERSIONS.find((qrVersion) => qrVersion.errorCapacity[errorCapacity] >= message.length);
+  const qrCodeVersion = QR_CODE_INFO.find((qr) => qr.errorCapacity[errorCapacity] >= message.length);
 
   const versionInBinary = (qrCodeVersion.version >>> 0).toString(2).padStart(6, '0');
   const errorCorrectionBitsVersionPattern = calculateCorrectionBitsForVersion(versionInBinary);
@@ -166,16 +172,16 @@ function generateQrCode(message, errorCapacity) {
 
   // Show how to enter data
   const howToEnterDataExplanationMatrix = createQrCodeMatrix(qrCodeVersion.size);
-  paintModulesForAllPositionPatterns(howToEnterDataExplanationMatrix, defaultDarkColor, '#666');
-  paintModulesForAllAlignmentPatterns(howToEnterDataExplanationMatrix, defaultDarkColor, '#666');
-  paintModulesForAllTimingPatterns(howToEnterDataExplanationMatrix, defaultDarkColor, '#666');
+  paintModulesForAllPositionPatterns(howToEnterDataExplanationMatrix);
+  paintModulesForAllAlignmentPatterns(howToEnterDataExplanationMatrix);
+  paintModulesForAllTimingPatterns(howToEnterDataExplanationMatrix);
   paintModulesForAllVersionPatterns(
     howToEnterDataExplanationMatrix,
     `${versionInBinary}${errorCorrectionBitsVersionPattern}`,
     defaultDarkColor,
     '#666'
   );
-  paintModulesForAllFormatPatterns(howToEnterDataExplanationMatrix, formatBitsAfterXor, defaultDarkColor, '#666');
+  paintModulesForAllFormatPatterns(howToEnterDataExplanationMatrix, formatBitsAfterXor);
   // mode (data codification format, always binary in my case)
   paintModulesForDataAndErrorRegion(
     howToEnterDataExplanationMatrix,
@@ -191,12 +197,7 @@ function generateQrCode(message, errorCapacity) {
     numberOfCharactersEnteredLightColor
   );
   // paint the data
-  paintModulesForDataAndErrorRegion(
-    howToEnterDataExplanationMatrix,
-    convertAsciiToBinary(message),
-    dataEnteredDarkColor,
-    dataEnteredLightColor
-  );
+  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, asciiToBinary(message), dataEnteredDarkColor, dataEnteredLightColor);
   // padding bits (in my case always 4 modules)
   paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, '0000');
   // padding codewords
@@ -216,13 +217,246 @@ function generateQrCode(message, errorCapacity) {
   // reminder bits for qr code symbol (max 7 modules)
   paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, '0000000', undefined, 'navajowhite');
   paintSvgQrCode(CSS_IDS.HOW_TO_ENTER_DATA_EXPLANATION, howToEnterDataExplanationMatrix);
-  
 
   console.log(howToEnterDataExplanationMatrix);
 }
 
 // create the default qr code with the input placeholder
 const { message, errorCapacity } = readInputs();
-generateQrCode(message, errorCapacity);
+// generateQrCode(message, errorCapacity);
 
 //#endregion listener-create-qr-code
+
+function generateQrCode2(message, errorCorrectionLevel) {
+  const QR_CODE_INFO_TO_USE = QR_CODE_INFO.find((qr) => qr.errorCorrectionLevel[errorCorrectionLevel].maxMessageLength >= message.length);
+
+  if (QR_CODE_INFO_TO_USE === null) {
+    // TODO check it is possible to encode the data in a qr code, or if it is too big, show message
+    console.error('Not possible to find a QR_CODE_INFO_TO_USE: ', QR_CODE_INFO_TO_USE);
+    return;
+  }
+
+  console.debug('QR_CODE_INFO_TO_USE: ', QR_CODE_INFO_TO_USE);
+
+  //#region  version, version pattern modules calculation
+  console.debug('%cversion, version pattern modules calculation', 'background: #f99');
+  const VERSION_NUMBER_IN_BINARY = numberToBinary(QR_CODE_INFO_TO_USE.version, 6);
+  console.debug(`VERSION_NUMBER_IN_BINARY (${QR_CODE_INFO_TO_USE.version}): ${VERSION_NUMBER_IN_BINARY}`);
+  const ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN = calculateCorrectionBitsForVersion(VERSION_NUMBER_IN_BINARY);
+  console.debug(
+    `ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN: ${ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN} (length: ${ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN.length})`
+  );
+  const VERSION_PATTERN_ALL_BITS = `${VERSION_NUMBER_IN_BINARY}${ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN}`;
+  console.debug(`VERSION_PATTERN_ALL_BITS: ${VERSION_PATTERN_ALL_BITS} (length: ${VERSION_PATTERN_ALL_BITS.length})`);
+  //#endregion
+
+  //#region format information
+  console.debug('%cformat information', 'background: #f99');
+  const ERROR_CORRECTION_LEVELS_CODIFICATION = { L: '01', M: '00', Q: '11', H: '10' };
+  const SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY = ERROR_CORRECTION_LEVELS_CODIFICATION[errorCorrectionLevel];
+  console.debug(
+    `SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY (${errorCorrectionLevel}): ${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}`
+  );
+  const FORMATS_IN_BINARY = Object.keys(DATA_MASKS_PATTERNS).map(
+    (key) => `${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${key}`
+  );
+  console.debug(`FORMATS_IN_BINARY:`, FORMATS_IN_BINARY);
+  const FORTMAT_PATTERN_MASK = '101010000010010';
+  console.debug('FORTMAT_PATTERN_MASK', FORTMAT_PATTERN_MASK);
+  const FORMATS_PATTERN_AFTER_XOR_ALL_BITS = FORMATS_IN_BINARY.map((format) => ({
+    [format.substring(2, 5)]: applyXOR(`${format}${calculateCorrectionBitsForFormat(format)}`, FORTMAT_PATTERN_MASK),
+  })).reduce((prev, curr) => ({ ...prev, ...curr }), {});
+  console.debug(`FORMATS_PATTERN_AFTER_XOR_ALL_BITS:`, FORMATS_PATTERN_AFTER_XOR_ALL_BITS);
+  //#endregion
+
+  //#region mode and message length
+  console.debug('%cmode and message length', 'background: #f99');
+  const MODE_BITS = '0100'; // in my case always Byte
+  const MESSAGE_LENGTH_IN_BINARY = getMessageLengthAsBinary(QR_CODE_INFO_TO_USE.version, message.length);
+  console.debug(`MESSAGE_LENGTH_IN_BINARY (${message.length}): ${MESSAGE_LENGTH_IN_BINARY}`);
+  //#endregion
+
+  //#region message in binary
+  console.debug('%cmessage in binary', 'background: #f99');
+  const MESSAGE_IN_BINARY = asciiToBinary(message);
+  console.debug(
+    'MESSAGE_IN_BINARY:',
+    MESSAGE_IN_BINARY,
+    '\n',
+    splitInBytes(MESSAGE_IN_BINARY)
+      .map((b, i) => `(${message[i]})->${b}`)
+      .join('   ')
+  );
+  //#endregion
+
+  //#region padding codewords and teminator
+  console.debug('%cpadding codewords and teminator', 'background: #f99');
+  const PADDING_CODEWORDS = getPaddingCodewords(
+    QR_CODE_INFO_TO_USE.errorCorrectionLevel[errorCorrectionLevel].maxMessageLength,
+    message.length
+  );
+  console.debug(`PADDING_CODEWORDS: ${PADDING_CODEWORDS || "''"}`, '\n', splitInBytes(PADDING_CODEWORDS).join(' '));
+  const TERMINATOR = '0000'; // for all versions and modes
+  //#endregion
+
+  //#region bit stream
+  console.debug('%cbit stream', 'background: #f99');
+  const DATA_BIT_STREAM = `${MODE_BITS}${MESSAGE_LENGTH_IN_BINARY}${MESSAGE_IN_BINARY}${TERMINATOR}${PADDING_CODEWORDS}`; // TODO check if terminator is last or not
+  console.debug(
+    `DATA_BIT_STREAM (${DATA_BIT_STREAM.length / 8} codewords): ${DATA_BIT_STREAM}`,
+    '\n',
+    splitInBytes(DATA_BIT_STREAM).join(' ')
+  );
+  //#endregion
+
+  //#region divide bit stream in blocks
+  console.debug('%cdivide bit stream in blocks', 'background: #f99');
+  const DATA_BLOCKS = [];
+  const blocksStructure = QR_CODE_INFO_TO_USE.errorCorrectionLevel[errorCorrectionLevel].blocksStructure;
+  console.debug('blocks structure', blocksStructure);
+  let dataBitStreamCopy = DATA_BIT_STREAM;
+  blocksStructure.forEach((block) => {
+    for (let i = 0; i < block.numberOfBlocks; i++) {
+      DATA_BLOCKS.push(dataBitStreamCopy.slice(0, block.dataCodewordsPerBlock * 8));
+      dataBitStreamCopy = dataBitStreamCopy.slice(block.dataCodewordsPerBlock * 8);
+    }
+  });
+  console.debug(`DATA_BLOCKS: ${DATA_BLOCKS.length} \n`, DATA_BLOCKS.map((b) => `${b.length / 8} codewords: ${b}`).join('\n'));
+  //#endregion
+
+  //#region calculate error correction bits for blocks
+  console.debug('%ccalculate error correction bits for blocks', 'background: #f99');
+  const alphaExponents = GENERATOR_POLYNOMIALS.find(
+    (gp) =>
+      gp.numberOfErrorCorrectionCodewords ===
+      QR_CODE_INFO_TO_USE.errorCorrectionLevel[errorCorrectionLevel].numberOfErrorCorrectionCodewords / DATA_BLOCKS.length
+  ).alphaExponents;
+
+  const polynomial = alphaExponents
+    .map((ae) => EXPONENTIALS_TABLE[ae])
+    .map((v) => numberToBinary(v))
+    .join('');
+  const ERROR_CORRECTION_BITS_BLOCKS = DATA_BLOCKS.map((block) => divideBinaryPolinomials(block, polynomial));
+  console.debug(
+    `ERROR_CORRECTION_BITS_BLOCKS: ${ERROR_CORRECTION_BITS_BLOCKS.length} \n`,
+    ERROR_CORRECTION_BITS_BLOCKS.map((b) => `${b.length / 8} codewords: ${b}`).join('\n')
+  );
+  //#endregion
+
+  //#region paint qr code without masking
+  console.debug('%cpaint qr code without masking', 'background: #f99');
+  const qrCodeMatrixWithoutMasking = createQrCodeMatrix(QR_CODE_INFO_TO_USE.size);
+
+  // use another color to avoid applying masking to them
+  paintModulesForAllPositionPatterns(qrCodeMatrixWithoutMasking, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+  paintModulesForAllAlignmentPatterns(qrCodeMatrixWithoutMasking, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+  paintModulesForAllTimingPatterns(qrCodeMatrixWithoutMasking, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+  paintModulesForAllVersionPatterns(qrCodeMatrixWithoutMasking, VERSION_PATTERN_ALL_BITS, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+  paintModulesForAllFormatPatterns(qrCodeMatrixWithoutMasking, '111111111111111', EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR); // this is fake (not fully calculated yet)
+  paintModules(qrCodeMatrixWithoutMasking, [[QR_CODE_INFO_TO_USE.size - 8, 8]], EXCLUDE_FROM_MASK_COLOR); // override always dark module
+
+  // mix data block codewords (including mode, message length, padding codewords and terminator)
+  let mixedDataBlocks = '';
+  const dataBlocksInCodewords = DATA_BLOCKS.map((block) => splitInBytes(block));
+  for (let i = 0; i < Math.max(...dataBlocksInCodewords.map((b) => b.length)); i++) {
+    for (let j = 0; j < dataBlocksInCodewords.length; j++) {
+      if (dataBlocksInCodewords[j][i] !== undefined) mixedDataBlocks += dataBlocksInCodewords[j][i];
+    }
+  }
+  console.debug('mixedDataBlocks', mixedDataBlocks);
+  paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, mixedDataBlocks);
+
+  // mix error correction block codewords
+  let mixedErrorCorrectionBlocks = '';
+  const errorCorrectionBitsBlocksInCodewords = ERROR_CORRECTION_BITS_BLOCKS.map((block) => splitInBytes(block));
+  for (let i = 0; i < Math.max(...errorCorrectionBitsBlocksInCodewords.map((b) => b.length)); i++) {
+    for (let j = 0; j < errorCorrectionBitsBlocksInCodewords.length; j++) {
+      if (errorCorrectionBitsBlocksInCodewords[j][i] !== undefined)
+        mixedErrorCorrectionBlocks += errorCorrectionBitsBlocksInCodewords[j][i];
+    }
+  }
+  console.debug('mixedErrorCorrectionBlocks', mixedErrorCorrectionBlocks);
+  paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, mixedErrorCorrectionBlocks);
+
+  paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, '0'.repeat(QR_CODE_INFO_TO_USE.reminderBits));
+  //#endregion
+
+  //#region apply and evaluate masking
+  console.debug('%capply and evaluate masking', 'background: #f99');
+  const QR_CODES_WITH_MASK_APPLIED = Object.keys(DATA_MASKS_PATTERNS).reduce(
+    (prev, maskId) => ({ ...prev, [maskId]: applyMask(maskId, qrCodeMatrixWithoutMasking) }),
+    {}
+  );
+
+  const maskScores = Object.entries(QR_CODES_WITH_MASK_APPLIED).reduce(
+    (prev, entry) => ({ ...prev, [entry[0]]: evaluateQrCodeAfterMaskApplied(entry[1]) }),
+    {}
+  );
+  console.debug('maskScores', maskScores);
+
+  // choose the one with less score
+  const MASK_APPLIED = Object.keys(maskScores).reduce((a, b) => (maskScores[a] < maskScores[b] ? a : b));
+  console.debug(`MASK_APPLIED: ${MASK_APPLIED}`);
+  //#endregion
+
+  //#region paint final qr code
+  paintModulesForAllPositionPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED]);
+  paintModulesForAllAlignmentPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED]);
+  paintModulesForAllTimingPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED]);
+  paintModulesForAllVersionPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], VERSION_PATTERN_ALL_BITS);
+  paintModulesForAllFormatPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], FORMATS_PATTERN_AFTER_XOR_ALL_BITS[MASK_APPLIED]);
+  paintSvgQrCode(CSS_IDS.GENERATED_FINAL_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 0 });
+  //#endregion
+}
+
+generateQrCode2(message, errorCapacity);
+
+/*
+ // TODO remove, this is for testing
+  const howToEnterDataExplanationMatrix = createQrCodeMatrix(QR_CODE_INFO_TO_USE.size);
+  paintModulesForAllPositionPatterns(howToEnterDataExplanationMatrix);
+  paintModulesForAllAlignmentPatterns(howToEnterDataExplanationMatrix);
+  paintModulesForAllTimingPatterns(howToEnterDataExplanationMatrix);
+  paintModulesForAllVersionPatterns(
+    howToEnterDataExplanationMatrix,
+    VERSION_PATTERN_ALL_BITS,
+    defaultDarkColor,
+    '#666'
+  );
+  paintModulesForAllFormatPatterns(howToEnterDataExplanationMatrix, '101001110100101'); // TODO this is fake
+  // mode (data codification format, always binary in my case)
+  paintModulesForDataAndErrorRegion(
+    howToEnterDataExplanationMatrix,
+    MODE_BITS,
+    dataCodificationFormatDarkColor,
+    dataCodificationFormatLightColor
+  );
+  // message length
+  paintModulesForDataAndErrorRegion(
+    howToEnterDataExplanationMatrix,
+    MESSAGE_LENGTH_IN_BINARY,
+    numberOfCharactersEnteredDarkColor,
+    numberOfCharactersEnteredLightColor
+  );
+  // paint the data
+  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, MESSAGE_IN_BINARY, dataEnteredDarkColor, dataEnteredLightColor);
+  // padding bits (in my case always 4 modules)
+  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, PADDING_CODEWORDS);
+  // padding codewords
+  paintModulesForDataAndErrorRegion(
+    howToEnterDataExplanationMatrix,
+    TERMINATOR,
+    padCodewordDarkColor,
+    padCodewordLightColor
+  );
+  // error correction modules
+  paintModulesForDataAndErrorRegion(
+    howToEnterDataExplanationMatrix,
+    ERROR_CORRECTION_BITS_BLOCKS[0],
+    errorCodewordsDarkColor,
+    errorCodewordsLightColor
+  );
+  // reminder bits for qr code symbol (max 7 modules)
+  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, '0000000', undefined, 'navajowhite');
+  paintSvgQrCode(CSS_IDS.HOW_TO_ENTER_DATA_EXPLANATION, howToEnterDataExplanationMatrix);
+ */

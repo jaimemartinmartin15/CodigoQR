@@ -1,12 +1,12 @@
 import { ELEMENTS } from './elements';
-import { QR_CODE_VERSIONS } from './qr-code-versions';
+import { QR_CODE_INFO } from './qr-code-info';
 
 //#region versions
 
 export function createVersionsTable() {
   const versionsTableBody = ELEMENTS.VERSIONS_TABLE.querySelector('tbody');
 
-  QR_CODE_VERSIONS.forEach((v) => {
+  QR_CODE_INFO.forEach((v) => {
     const tr = document.createElement('tr');
 
     const td1 = document.createElement('td');
@@ -16,16 +16,16 @@ export function createVersionsTable() {
     td2.textContent = v.size;
 
     const td3 = document.createElement('td');
-    td3.textContent = `L: ${v.errorCapacity.L}`;
+    td3.textContent = `L: ${v.errorCorrectionLevel.L.maxMessageLength}`;
 
     const td4 = document.createElement('td');
-    td4.textContent = `M: ${v.errorCapacity.M}`;
+    td4.textContent = `M: ${v.errorCorrectionLevel.M.maxMessageLength}`;
 
     const td5 = document.createElement('td');
-    td5.textContent = `Q: ${v.errorCapacity.Q}`;
+    td5.textContent = `Q: ${v.errorCorrectionLevel.Q.maxMessageLength}`;
 
     const td6 = document.createElement('td');
-    td6.textContent = `H: ${v.errorCapacity.H}`;
+    td6.textContent = `H: ${v.errorCorrectionLevel.H.maxMessageLength}`;
 
     tr.append(td1);
     tr.append(td2);
@@ -37,18 +37,18 @@ export function createVersionsTable() {
   });
 }
 
-export function hightlightVersionInVersionsTable(version, errorCapacity) {
+export function hightlightVersionInVersionsTable(version, errorCorrectionLevel) {
   // unselect all rows and columns
   Array.from(ELEMENTS.VERSIONS_TABLE.querySelectorAll('tbody tr')).forEach((tr) => {
     tr.classList.remove('selected');
     Array.from(tr.querySelectorAll('td')).forEach((column) => column.classList.remove('selected'));
   });
 
-  // select the row and version and errorCapacity columns
+  // select the row and version and errorCorrectionLevel columns
   const versionRow = ELEMENTS.VERSIONS_TABLE.querySelectorAll('tbody tr')[version - 1];
   versionRow.classList.add('selected');
   versionRow.children[0].classList.add('selected');
-  versionRow.children[2 + ['L', 'M', 'Q', 'H'].indexOf(errorCapacity)].classList.add('selected');
+  versionRow.children[2 + ['L', 'M', 'Q', 'H'].indexOf(errorCorrectionLevel)].classList.add('selected');
 
   // scroll to show the selected version
   ELEMENTS.VERSIONS_TABLE.scrollTop = versionRow.offsetTop - ELEMENTS.VERSIONS_TABLE.clientHeight / 2 + 50; // 50 header table
@@ -61,7 +61,7 @@ export function hightlightVersionInVersionsTable(version, errorCapacity) {
 export function createAlignmentPatternsTable() {
   const bodyTable = ELEMENTS.ALIGNMENT_PATTERN_TABLE.querySelector('tbody');
 
-  QR_CODE_VERSIONS.forEach((version) => {
+  QR_CODE_INFO.forEach((version) => {
     const tr = document.createElement('tr');
 
     const td1 = document.createElement('td');

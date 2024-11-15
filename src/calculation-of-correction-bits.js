@@ -6,9 +6,7 @@ import {
   versionInformationLightColor,
 } from './colors';
 import { ELEMENTS } from './elements';
-import { applyXOR, paintSvgBitAt } from './qr-code-utils';
-import { TABLE_9 } from './table-9';
-import { TABLE_A1 } from './table-a1';
+import { paintSvgBitAt } from './qr-code-utils';
 
 // TODO is it possible to create a generic function with parameters that serves for both cases version and format?
 // TODO rename first13bits and first11bits variables to avoid confusion in the return
@@ -512,92 +510,92 @@ function getPrimitiveAsBinary(alphaExponent) {
 /************************************** GITHUB **************************************/
 /************************************** GITHUB **************************************/
 
-function add(a, b) {
-	return a ^ b;
-}
+// function add(a, b) {
+//   return a ^ b;
+// }
 
-function multiply(a, b) {
-  // Si cualquiera de los dos operandos es cero devolvemos cero.
-  if (a == 0 || b == 0) {
-    return 0;
-  }
-  // Si uno de los dos operandos es 1 devolvemos el otro operando.
-  if (a == 1) {
-    return b;
-  }
-  if (b == 1) {
-    return a;
-  }
-  return expTable[(logTable[a] + logTable[b]) % 255];
-}
+// function multiply(a, b) {
+//   // Si cualquiera de los dos operandos es cero devolvemos cero.
+//   if (a == 0 || b == 0) {
+//     return 0;
+//   }
+//   // Si uno de los dos operandos es 1 devolvemos el otro operando.
+//   if (a == 1) {
+//     return b;
+//   }
+//   if (b == 1) {
+//     return a;
+//   }
+//   return expTable[(logTable[a] + logTable[b]) % 255];
+// }
 
-const IRREDUCTIBLE_POLINOMIAL = 0x11d; // m(x) = x^8 + x^4 + x^3 + x^2 + 1
-const expTable = (function createExponentialsTable() {
-  let expTable = new Array(256);
-  let x = 1;
-  for (let i = 0; i <= 256 - 1; i++) {
-    expTable[i] = x;
-    x = x * 2;
-    if (x >= 256) {
-      x = x ^ IRREDUCTIBLE_POLINOMIAL;
-    }
-  }
+// const IRREDUCTIBLE_POLINOMIAL = 0x11d; // m(x) = x^8 + x^4 + x^3 + x^2 + 1
+// const expTable = (function createExponentialsTable() {
+//   let expTable = new Array(256);
+//   let x = 1;
+//   for (let i = 0; i <= 256 - 1; i++) {
+//     expTable[i] = x;
+//     x = x * 2;
+//     if (x >= 256) {
+//       x = x ^ IRREDUCTIBLE_POLINOMIAL;
+//     }
+//   }
 
-  return expTable;
-})();
+//   return expTable;
+// })();
 
-const logTable = (function createLogarithmsTable() {
-  let logTable = new Array(256);
-  for (let i = 0; i < 256 - 1; i++) {
-    logTable[expTable[i]] = i;
-  }
-  logTable[0] = undefined;
-  return logTable;
-})();
+// const logTable = (function createLogarithmsTable() {
+//   let logTable = new Array(256);
+//   for (let i = 0; i < 256 - 1; i++) {
+//     logTable[expTable[i]] = i;
+//   }
+//   logTable[0] = undefined;
+//   return logTable;
+// })();
 
-// console.log({ expTable, logTable });
+// // console.log({ expTable, logTable });
 
-function divide(a, b) {
-  if (b == 0) {
-    throw new Error('divide() cannot divide by zero');
-  }
-  if (a == 0) {
-    return 0;
-  }
-  if (b == 1) {
-    return a;
-  }
-  return expTable[(logTable[a] - logTable[b]) % 255];
-}
+// function divide(a, b) {
+//   if (b == 0) {
+//     throw new Error('divide() cannot divide by zero');
+//   }
+//   if (a == 0) {
+//     return 0;
+//   }
+//   if (b == 1) {
+//     return a;
+//   }
+//   return expTable[(logTable[a] - logTable[b]) % 255];
+// }
 
-function dividePolinomials(dividendBinary, divisorBinary) {
-  const dividendDecimal = dividendBinary.match(/.{1,8}/g).map((b) => parseInt(b, 2));
-  const divisorDecimal = divisorBinary.match(/.{1,8}/g).map((b) => parseInt(b, 2));
-  dividendDecimal.push(...new Array(divisorDecimal.length-1).fill(0))
+// export function dividePolinomials(dividendBinary, divisorBinary) {
+//   const dividendDecimal = dividendBinary.match(/.{1,8}/g).map((b) => parseInt(b, 2));
+//   const divisorDecimal = divisorBinary.match(/.{1,8}/g).map((b) => parseInt(b, 2));
+//   dividendDecimal.push(...new Array(divisorDecimal.length - 1).fill(0));
 
-  for (let i = 0; i < dividendDecimal.length - divisorDecimal.length + 1; i++) {
-    // for (let i = 0; i < 1; i++) {
-    // console.warn('iteration ', i);
-    // console.log('dividendDecimal', dividendDecimal);
-    // console.log('divisorDecimal', divisorDecimal);
+//   for (let i = 0; i < dividendDecimal.length - divisorDecimal.length + 1; i++) {
+//     // for (let i = 0; i < 1; i++) {
+//     // console.warn('iteration ', i);
+//     // console.log('dividendDecimal', dividendDecimal);
+//     // console.log('divisorDecimal', divisorDecimal);
 
-    const div = divide(dividendDecimal[i], divisorDecimal[0]);
-    // console.log('division', div);
+//     const div = divide(dividendDecimal[i], divisorDecimal[0]);
+//     // console.log('division', div);
 
-    const mult = divisorDecimal.map((gx) => multiply(gx, div));
-    // console.log('mult', mult);
+//     const mult = divisorDecimal.map((gx) => multiply(gx, div));
+//     // console.log('mult', mult);
 
-    for (let j = 0; j < mult.length; j++) {
-      // sum = subtract = xor
-      dividendDecimal[i + j] = add(dividendDecimal[i + j], mult[j])
-    }
+//     for (let j = 0; j < mult.length; j++) {
+//       // sum = subtract = xor
+//       dividendDecimal[i + j] = add(dividendDecimal[i + j], mult[j]);
+//     }
 
-    // console.error('dividedDecimal at the end', dividendDecimal);
-  }
+//     // console.error('dividedDecimal at the end', dividendDecimal);
+//   }
 
-  return dividendDecimal
-    .slice(-(divisorDecimal.length - 1))
-    .map((d) => (d >>> 0).toString(2).padStart(8, '0'))
-    .join('');
-}
+//   return dividendDecimal
+//     .slice(-(divisorDecimal.length - 1))
+//     .map((d) => (d >>> 0).toString(2).padStart(8, '0'))
+//     .join('');
+// }
 //#endregion data

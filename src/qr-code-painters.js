@@ -11,7 +11,7 @@
 
 import { DEFAULT_COLOR, defaultDarkColor, defaultLightColor } from './colors';
 import { paintColumnRangeModules, paintModules, paintRowRangeModules } from './qr-code-utils';
-import { QR_CODE_VERSIONS } from './qr-code-versions';
+import { QR_CODE_INFO } from './qr-code-info';
 
 //#region position
 
@@ -88,7 +88,7 @@ function paintModulesForAnAlignmentPatternAt(qrCodeMatrix, row, column, darkColo
  * from version 35 (157x157) to version 40 (177x177) -> 46 markers (5 - 7 - 7 - 7 - 7 - 7 - 6)
  */
 export function paintModulesForAllAlignmentPatterns(qrCodeMatrix, darkColor = defaultDarkColor, lightColor = defaultLightColor) {
-  const patternPositions = QR_CODE_VERSIONS.find((qr) => qr.size === qrCodeMatrix.length).alignmentPatternPositions;
+  const patternPositions = QR_CODE_INFO.find((qr) => qr.size === qrCodeMatrix.length).alignmentPatternPositions;
   const numberOfPatterns = patternPositions.length;
   for (let i = 0; i < numberOfPatterns; i++) {
     for (let j = 0; j < numberOfPatterns; j++) {

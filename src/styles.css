@@ -106,20 +106,38 @@ img.qr-code-versions-example {
   width: 620px;
 }
 
-#format-pattern-completion-wrapper,
 #version-pattern-completion-wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 90px;
 }
 
-#format-pattern-completion-wrapper {
-  gap: 50px;
+#version-pattern-completion-wrapper figure {
+  margin: 0;
+  max-width: 300px;
+  text-align: center;
+}
+
+#version-pattern-completion-wrapper figcaption {
+  margin-top: 25px;
+  font-size: 1rem;
 }
 
 #version-pattern-completion-1,
 #version-pattern-completion-2 {
   width: 300px;
   height: 300px;
+}
+
+#format-pattern-completion-wrapper {
+  margin: 0;
+}
+
+#format-pattern-completion-wrapper div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 #format-pattern-completion-1 {
@@ -133,6 +151,15 @@ img.qr-code-versions-example {
 
 #format-pattern-completion-3 {
   width: 400px;
+}
+
+#format-pattern-completion-wrapper figcaption {
+  font-size: 1rem;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 68%;
+  margin: 0 auto;
+  margin-top: 25px;
 }
 
 #information-version-18-bits {
@@ -185,7 +212,7 @@ li .error-capacity-name {
 #alignment-pattern-table {
   display: inline-block;
   width: 100%;
-  max-height: 400px;
+  max-height: 300px;
   overflow: auto;
   border-spacing: 0;
   text-align: center;
@@ -362,15 +389,18 @@ li .error-capacity-name {
     flex-direction: column;
   }
 
-  #format-pattern-completion-wrapper,
+  #format-pattern-completion-wrapper div,
   #version-pattern-completion-wrapper {
     flex-direction: column;
-    align-items: center;
+    gap: 30px;
   }
 
-  #format-pattern-completion-1,
-  #format-pattern-completion-2,
-  #format-pattern-completion-3 {
-    width: 100%;
+  #version-pattern-completion-1 {
+    height: auto;
+  }
+
+  #format-pattern-completion-wrapper div {
+    justify-content: center;
+    align-items: center;
   }
 }

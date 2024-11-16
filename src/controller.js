@@ -262,9 +262,13 @@ function generateQrCode2(message, errorCorrectionLevel) {
   );
   console.debug(`FORMATS_IN_BINARY:`, FORMATS_IN_BINARY);
   const FORTMAT_PATTERN_MASK = '101010000010010';
-  console.debug('FORTMAT_PATTERN_MASK', FORTMAT_PATTERN_MASK);
+  console.debug('FORTMAT_PATTERN_MASK:', FORTMAT_PATTERN_MASK);
+  const ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN = FORMATS_IN_BINARY.map((format) => ({
+    [format]: calculateCorrectionBitsForFormat(format),
+  })).reduce((prev, curr) => ({ ...prev, ...curr }), {});
+  console.debug(`ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN:`, ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN);
   const FORMATS_PATTERN_AFTER_XOR_ALL_BITS = FORMATS_IN_BINARY.map((format) => ({
-    [format.substring(2, 5)]: applyXOR(`${format}${calculateCorrectionBitsForFormat(format)}`, FORTMAT_PATTERN_MASK),
+    [format]: applyXOR(`${format}${ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN[format]}`, FORTMAT_PATTERN_MASK),
   })).reduce((prev, curr) => ({ ...prev, ...curr }), {});
   console.debug(`FORMATS_PATTERN_AFTER_XOR_ALL_BITS:`, FORMATS_PATTERN_AFTER_XOR_ALL_BITS);
   //#endregion
@@ -404,59 +408,79 @@ function generateQrCode2(message, errorCorrectionLevel) {
   paintModulesForAllAlignmentPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED]);
   paintModulesForAllTimingPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED]);
   paintModulesForAllVersionPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], VERSION_PATTERN_ALL_BITS);
-  paintModulesForAllFormatPatterns(QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], FORMATS_PATTERN_AFTER_XOR_ALL_BITS[MASK_APPLIED]);
-  paintSvgQrCode(CSS_IDS.GENERATED_FINAL_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 0 });
+  paintModulesForAllFormatPatterns(
+    QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED],
+    FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`]
+  );
+  paintSvgQrCode(CSS_IDS.GENERATED_FINAL_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 4 });
+  //#endregion
+
+  //#region paint empty qr code
+  const emptyQrCodeMatrix = createQrCodeMatrix(QR_CODE_INFO_TO_USE.size);
+  paintSvgQrCode(CSS_IDS.EMPTY_QR_CODE, emptyQrCodeMatrix);
+  //#endregion
+
+  //#region decide size of qr code step explanation
+  // number of characters to codify in the qr code
+  document.querySelectorAll(CSS_CLASSES.NUMBER_OF_CHARACTERS_IN_THE_INPUT).forEach((e) => (e.textContent = message.length));
+  // selected error capacity
+  document.querySelectorAll(CSS_CLASSES.SELECTED_ERROR_CAPACITY_LEVEL).forEach((e) => (e.textContent = errorCorrectionLevel));
+  // highlight the row in the table
+  hightlightVersionInVersionsTable(QR_CODE_INFO_TO_USE.version, errorCorrectionLevel);
+  //#endregion
+
+  //#region qr code sections
+  // paint matrix and svg qr code sections
+  const sectionsQrCodeMatrix = createQrCodeMatrix(QR_CODE_INFO_TO_USE.size);
+  paintModulesForAllPositionPatterns(sectionsQrCodeMatrix, positionPatternDarkColor, positionPatternLightColor);
+  paintModulesForAllAlignmentPatterns(sectionsQrCodeMatrix, alignmentPatternDarkColor, alignmentPatternLightColor);
+  paintModulesForAllTimingPatterns(sectionsQrCodeMatrix, timingPatternDarkColor, timingPatternLightColor);
+  paintModulesForAllVersionPatterns(
+    sectionsQrCodeMatrix,
+    VERSION_PATTERN_ALL_BITS,
+    versionInformationDarkColor,
+    versionInformationLightColor
+  );
+  paintModulesForAllFormatPatterns(
+    sectionsQrCodeMatrix,
+    FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`],
+    formatInformationDarkColor,
+    formatInformationLightColor
+  );
+  paintSvgQrCode(CSS_IDS.QR_CODE_SECTIONS, sectionsQrCodeMatrix, { withGrid: true, margin: 3 });
+
+  // alignment patterns
+  hightlightVersionInAlignmentPatternsTable(QR_CODE_INFO_TO_USE.version);
+
+  // version pattern
+  Array.from(document.querySelectorAll(CSS_CLASSES.QR_CODE_VERSION)).forEach((e) => (e.textContent = QR_CODE_INFO_TO_USE.version));
+  Array.from(document.querySelectorAll(CSS_CLASSES.QR_CODE_VERSION_BINARY)).forEach((e) => (e.textContent = VERSION_NUMBER_IN_BINARY));
+  showHowVersionCorrectionBitsAreCalculated(VERSION_NUMBER_IN_BINARY);
+  Array.from(document.querySelectorAll(CSS_CLASSES.QR_CODE_VERSION_BINARY)).forEach((e) => (e.textContent = VERSION_NUMBER_IN_BINARY));
+  Array.from(document.querySelectorAll(CSS_CLASSES.VERSION_CORRECTION_BITS)).forEach(
+    (e) => (e.textContent = ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN)
+  );
+  showVersionPatternCompletion(VERSION_PATTERN_ALL_BITS);
+
+  // format pattern
+  Array.from(document.querySelectorAll(CSS_CLASSES.ERROR_CAPACITY_CODIFICATION_BITS)).forEach(
+    (e) => (e.innerHTML = SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY)
+  );
+  Array.from(document.querySelectorAll(CSS_CLASSES.MASK_CODIFICATION_BITS)).forEach((e) => (e.innerHTML = MASK_APPLIED));
+  Array.from(document.querySelectorAll(CSS_CLASSES.FORMAT_INFORMATION_DATA_BITS)).forEach(
+    (e) => (e.innerHTML = `${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`)
+  );
+  Array.from(document.querySelectorAll(CSS_CLASSES.FORMAT_INFORMATION_CORRECTION_BITS)).forEach(
+    (e) =>
+      (e.innerHTML = ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`])
+  );
+  showHowFormatCorrectionBitsAreCalculated(`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`);
+  document.querySelector(CSS_IDS.INFORMATION_FORMAT_15_BITS_AFTER_XOR).textContent =
+    FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`];
+  showFormatPatternCompletion(
+    FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`]
+  );
   //#endregion
 }
 
 generateQrCode2(message, errorCapacity);
-
-/*
- // TODO remove, this is for testing
-  const howToEnterDataExplanationMatrix = createQrCodeMatrix(QR_CODE_INFO_TO_USE.size);
-  paintModulesForAllPositionPatterns(howToEnterDataExplanationMatrix);
-  paintModulesForAllAlignmentPatterns(howToEnterDataExplanationMatrix);
-  paintModulesForAllTimingPatterns(howToEnterDataExplanationMatrix);
-  paintModulesForAllVersionPatterns(
-    howToEnterDataExplanationMatrix,
-    VERSION_PATTERN_ALL_BITS,
-    defaultDarkColor,
-    '#666'
-  );
-  paintModulesForAllFormatPatterns(howToEnterDataExplanationMatrix, '101001110100101'); // TODO this is fake
-  // mode (data codification format, always binary in my case)
-  paintModulesForDataAndErrorRegion(
-    howToEnterDataExplanationMatrix,
-    MODE_BITS,
-    dataCodificationFormatDarkColor,
-    dataCodificationFormatLightColor
-  );
-  // message length
-  paintModulesForDataAndErrorRegion(
-    howToEnterDataExplanationMatrix,
-    MESSAGE_LENGTH_IN_BINARY,
-    numberOfCharactersEnteredDarkColor,
-    numberOfCharactersEnteredLightColor
-  );
-  // paint the data
-  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, MESSAGE_IN_BINARY, dataEnteredDarkColor, dataEnteredLightColor);
-  // padding bits (in my case always 4 modules)
-  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, PADDING_CODEWORDS);
-  // padding codewords
-  paintModulesForDataAndErrorRegion(
-    howToEnterDataExplanationMatrix,
-    TERMINATOR,
-    padCodewordDarkColor,
-    padCodewordLightColor
-  );
-  // error correction modules
-  paintModulesForDataAndErrorRegion(
-    howToEnterDataExplanationMatrix,
-    ERROR_CORRECTION_BITS_BLOCKS[0],
-    errorCodewordsDarkColor,
-    errorCodewordsLightColor
-  );
-  // reminder bits for qr code symbol (max 7 modules)
-  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, '0000000', undefined, 'navajowhite');
-  paintSvgQrCode(CSS_IDS.HOW_TO_ENTER_DATA_EXPLANATION, howToEnterDataExplanationMatrix);
- */

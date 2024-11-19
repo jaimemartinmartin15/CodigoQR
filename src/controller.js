@@ -10,15 +10,16 @@ import {
 import {
   alignmentPatternDarkColor,
   alignmentPatternLightColor,
-  dataCodificationFormatDarkColor,
-  dataCodificationFormatLightColor,
   dataEnteredDarkColor,
   dataEnteredLightColor,
   defaultDarkColor,
+  defaultLightColor,
   errorCodewordsDarkColor,
   errorCodewordsLightColor,
   formatInformationDarkColor,
   formatInformationLightColor,
+  modeDarkColor,
+  modeLightColor,
   numberOfCharactersEnteredDarkColor,
   numberOfCharactersEnteredLightColor,
   padCodewordDarkColor,
@@ -57,6 +58,7 @@ import {
 import { divideBinaryPolinomials, GENERATOR_POLYNOMIALS } from './reed-salomon';
 import {
   createAlignmentPatternsTable,
+  createMessageToAsciiTable,
   createVersionsTable,
   hightlightVersionInAlignmentPatternsTable,
   hightlightVersionInVersionsTable,
@@ -183,12 +185,7 @@ function generateQrCode(message, errorCapacity) {
   );
   paintModulesForAllFormatPatterns(howToEnterDataExplanationMatrix, formatBitsAfterXor);
   // mode (data codification format, always binary in my case)
-  paintModulesForDataAndErrorRegion(
-    howToEnterDataExplanationMatrix,
-    '0100',
-    dataCodificationFormatDarkColor,
-    dataCodificationFormatLightColor
-  );
+  paintModulesForDataAndErrorRegion(howToEnterDataExplanationMatrix, '0100', modeDarkColor, modeLightColor);
   // message length
   paintModulesForDataAndErrorRegion(
     howToEnterDataExplanationMatrix,
@@ -360,27 +357,27 @@ function generateQrCode2(message, errorCorrectionLevel) {
   paintModules(qrCodeMatrixWithoutMasking, [[QR_CODE_INFO_TO_USE.size - 8, 8]], EXCLUDE_FROM_MASK_COLOR); // override always dark module
 
   // mix data block codewords (including mode, message length, padding codewords and terminator)
-  let mixedDataBlocks = '';
+  let MIXED_DATA_BLOCKS = '';
   const dataBlocksInCodewords = DATA_BLOCKS.map((block) => splitInBytes(block));
   for (let i = 0; i < Math.max(...dataBlocksInCodewords.map((b) => b.length)); i++) {
     for (let j = 0; j < dataBlocksInCodewords.length; j++) {
-      if (dataBlocksInCodewords[j][i] !== undefined) mixedDataBlocks += dataBlocksInCodewords[j][i];
+      if (dataBlocksInCodewords[j][i] !== undefined) MIXED_DATA_BLOCKS += dataBlocksInCodewords[j][i];
     }
   }
-  console.debug('mixedDataBlocks', mixedDataBlocks);
-  paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, mixedDataBlocks);
+  console.debug('MIXED_DATA_BLOCKS', MIXED_DATA_BLOCKS);
+  paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, MIXED_DATA_BLOCKS);
 
   // mix error correction block codewords
-  let mixedErrorCorrectionBlocks = '';
+  let MIXED_ERROR_CORRECTION_BLOCKS = '';
   const errorCorrectionBitsBlocksInCodewords = ERROR_CORRECTION_BITS_BLOCKS.map((block) => splitInBytes(block));
   for (let i = 0; i < Math.max(...errorCorrectionBitsBlocksInCodewords.map((b) => b.length)); i++) {
     for (let j = 0; j < errorCorrectionBitsBlocksInCodewords.length; j++) {
       if (errorCorrectionBitsBlocksInCodewords[j][i] !== undefined)
-        mixedErrorCorrectionBlocks += errorCorrectionBitsBlocksInCodewords[j][i];
+        MIXED_ERROR_CORRECTION_BLOCKS += errorCorrectionBitsBlocksInCodewords[j][i];
     }
   }
-  console.debug('mixedErrorCorrectionBlocks', mixedErrorCorrectionBlocks);
-  paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, mixedErrorCorrectionBlocks);
+  console.debug('MIXED_ERROR_CORRECTION_BLOCKS', MIXED_ERROR_CORRECTION_BLOCKS);
+  paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, MIXED_ERROR_CORRECTION_BLOCKS);
 
   paintModulesForDataAndErrorRegion(qrCodeMatrixWithoutMasking, '0'.repeat(QR_CODE_INFO_TO_USE.reminderBits));
   //#endregion
@@ -481,6 +478,108 @@ function generateQrCode2(message, errorCorrectionLevel) {
     FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`]
   );
   //#endregion
+
+  //#region data modules and blocks
+  createMessageToAsciiTable(message);
+
+  // show how to divide data in blocks
+  ELEMENTS.HOW_TO_SPLIT_IN_BLOCKS.innerHTML = '';
+  DATA_BLOCKS.forEach((block, blockI) => {
+    const svgBlock = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgBlock.setAttribute('viewBox', `0 0 ${block.length} 1`);
+    svgBlock.classList.add('data-block');
+
+    for (let bitI = 0; bitI < block.length; bitI++) {
+      const messageBitIndex =
+        DATA_BLOCKS.slice(0, blockI).reduce((prev, curr) => prev + curr.length, 0) + bitI - 4 - MESSAGE_LENGTH_IN_BINARY.length;
+
+      const module = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      module.setAttribute('x', bitI);
+      module.setAttribute('y', 0);
+      module.setAttribute('width', 1);
+      module.setAttribute('height', 1);
+      if (blockI === 0 && bitI <= 3) {
+        module.setAttribute('fill', block[bitI] === '0' ? modeLightColor : modeDarkColor);
+      } else if (blockI === 0 && bitI <= 3 + MESSAGE_LENGTH_IN_BINARY.length) {
+        module.setAttribute('fill', block[bitI] === '0' ? numberOfCharactersEnteredLightColor : numberOfCharactersEnteredDarkColor);
+      } else if (messageBitIndex / 8 < message.length) {
+        module.setAttribute('fill', block[bitI] === '0' ? dataEnteredLightColor : dataEnteredDarkColor);
+      } else if (messageBitIndex < message.length * 8 + 4) {
+        module.setAttribute('fill', defaultLightColor);
+      } else {
+        module.setAttribute('fill', block[bitI] === '0' ? padCodewordLightColor : padCodewordDarkColor);
+      }
+      svgBlock.append(module);
+
+      if (messageBitIndex >= 0 && messageBitIndex / 8 < message.length) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', bitI + 0.5);
+        text.setAttribute('y', 0.75);
+        text.textContent = `${message[Math.floor(messageBitIndex / 8)]}${7 - (messageBitIndex % 8)}`;
+        text.setAttribute('fill', block[bitI] === '0' ? dataEnteredDarkColor : dataEnteredLightColor);
+        svgBlock.append(text);
+      }
+    }
+
+    ELEMENTS.HOW_TO_SPLIT_IN_BLOCKS.append(svgBlock);
+  });
+  //#endregion
+
+  //#region paint data, error and reminder qr code explanation
+  const qrCodeWithOnlyData = createQrCodeMatrix(QR_CODE_INFO_TO_USE.size);
+  paintModulesForAllPositionPatterns(qrCodeWithOnlyData);
+  paintModulesForAllAlignmentPatterns(qrCodeWithOnlyData);
+  paintModulesForAllTimingPatterns(qrCodeWithOnlyData);
+  paintModulesForAllVersionPatterns(qrCodeWithOnlyData, VERSION_PATTERN_ALL_BITS);
+  paintModulesForAllFormatPatterns(
+    qrCodeWithOnlyData,
+    FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`]
+  );
+
+  //  TODO fix this because it paints all as data, and it also contains pad codewords
+  paintModulesForDataAndErrorRegion(qrCodeWithOnlyData, MIXED_DATA_BLOCKS.slice(0, 4), modeDarkColor, modeLightColor);
+  paintModulesForDataAndErrorRegion(
+    qrCodeWithOnlyData,
+    MIXED_DATA_BLOCKS.slice(4, 4 + MESSAGE_LENGTH_IN_BINARY.length),
+    numberOfCharactersEnteredDarkColor,
+    numberOfCharactersEnteredLightColor
+  );
+  paintModulesForDataAndErrorRegion(
+    qrCodeWithOnlyData,
+    MIXED_DATA_BLOCKS.slice(4 + MESSAGE_LENGTH_IN_BINARY.length),
+    dataEnteredDarkColor,
+    dataEnteredLightColor
+  );
+
+  // errors and reminder bits
+  paintModulesForDataAndErrorRegion(qrCodeWithOnlyData, MIXED_ERROR_CORRECTION_BLOCKS, errorCodewordsDarkColor, errorCodewordsLightColor);
+  paintModulesForDataAndErrorRegion(qrCodeWithOnlyData, '0'.repeat(QR_CODE_INFO_TO_USE.reminderBits));
+
+  paintSvgQrCode(CSS_IDS.QR_CODE_DATA_REGION_EXPLAINED, qrCodeWithOnlyData);
+  //#endregion
+
+  //#region paint masks
+  Object.keys(DATA_MASKS_PATTERNS).forEach((maskId) => {
+    const qrCodeMatrix = createQrCodeMatrix(QR_CODE_INFO_TO_USE.size);
+
+    paintModulesForAllPositionPatterns(qrCodeMatrix, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+    paintModulesForAllAlignmentPatterns(qrCodeMatrix, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+    paintModulesForAllTimingPatterns(qrCodeMatrix, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+    paintModulesForAllVersionPatterns(qrCodeMatrix, VERSION_PATTERN_ALL_BITS, EXCLUDE_FROM_MASK_COLOR, EXCLUDE_FROM_MASK_COLOR);
+    paintModulesForAllFormatPatterns(
+      qrCodeMatrix,
+      FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`],
+      EXCLUDE_FROM_MASK_COLOR,
+      EXCLUDE_FROM_MASK_COLOR
+    );
+
+    applyMask(maskId, qrCodeMatrix);
+
+    paintSvgQrCode(`#mask-${maskId}`, applyMask(maskId, qrCodeMatrix), { withGrid: false, margin: 0 });
+  });
+  //#endregion
+
+  window.scrollTo(0, document.body.scrollHeight);
 }
 
 generateQrCode2(message, errorCapacity);

@@ -40,4 +40,7 @@ export const CSS_IDS = {
   INFORMATION_FORMAT_15_BITS_AFTER_XOR: '#information-format-15-bits-after-xor',
 
   ASCII_MESSAGE: '#ascii-message',
+
+  HOW_TO_SPLIT_IN_BLOCKS: '#how-to-split-in-blocks',
+  QR_CODE_DATA_REGION_EXPLAINED: '#qr-code-data-region-explained',
 };

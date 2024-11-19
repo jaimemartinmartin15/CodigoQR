@@ -45,7 +45,6 @@
   <section>
     <h1>Generador de códigos QR</h1>
 
-
     <div class="flex">
       <div>
         <div id="inputs">
@@ -139,8 +138,7 @@
 
       <li>
         Nivel <strong>H</strong><span class="error-capacity-name">igh</span>:
-        el nivel alto soporta hasta un <strong>30 %</strong> de errores. Recomendado para códigos QR que tienen un logo
-        en el centro.
+        el nivel alto soporta hasta un <strong>30 %</strong> de errores.
       </li>
     </ul>
 
@@ -163,401 +161,560 @@
 
       <tbody></tbody>
     </table>
-  </section>
-
-  <section>
-    <h1>Características de un código QR</h1>
-
-    <p>
-      Una vez ya sabemos que versión tenemos que usar del código QR y por tanto su tamaño, podemos empezar a rellenar
-      los módulos. Todos los códigos QR tienen ciertas secciones con diferentes propósitos. Estas son las que aparecen
-      en nuestro caso de estudio:
-    </p>
-
-    <svg id="qr-code-sections"></svg>
-
-    <p>
-      El resto de módulos sin colorear están reservados para los datos y corrección de errores.
-    </p>
 
     <section>
-      <h2>Márgenes</h2>
+      <h2>Características comunes de un código QR</h2>
 
       <p>
-        Los códigos QR deben tener a su alrededor una zona lisa (de color homogéneo sin nada impreso) de al menos 4
-        veces el tamaño de un módulo, que permita a los lectores leer el código con mayor facilidad y distinguirlo de
-        otros elementos cercanos. El color de esta zona también determina la reflectancia del código (oscuro sobre claro
-        o claro sobre oscuro).
+        Una vez ya sabemos que versión tenemos que usar del código QR y por tanto su tamaño, podemos empezar a rellenar
+        los módulos. Todos los códigos QR tienen ciertas secciones con diferentes propósitos. Estas son las que aparecen
+        en nuestro caso de estudio:
       </p>
-    </section>
 
-    <section>
-      <h2>Patrones de detección de posición</h2>
-
-      <div class="module-legend module-legend--position-pattern-dark"> negro</div>
-      <div class="module-legend module-legend--position-pattern-light"> blanco</div>
+      <svg id="qr-code-sections"></svg>
 
       <p>
-        Son patrones de 7x7 módulos separados del código por tiras de módulos blancos a su alrededor. Se colocan siempre
-        en las esquinas superior izquierda, superior derecha e inferior izquierda.
+        El resto de módulos sin colorear están reservados para los datos y corrección de errores.
       </p>
 
-      <p>
-        La posición de estos tres patrones en las esquinas del código QR forma un triángulo isósceles, lo que permite al
-        escáner reconocer el código QR incluso si está inclinado, girado, o si se lee desde cualquier dirección o en un
-        espejo.
-      </p>
-    </section>
+      <section>
+        <h3>Márgenes</h3>
 
-    <section>
-      <h2>Patrones de alineación</h2>
+        <p>
+          Los códigos QR deben tener a su alrededor una zona lisa (de color homogéneo sin nada impreso) de al menos 4
+          veces el tamaño de un módulo, que permita a los lectores leer el código con mayor facilidad y distinguirlo de
+          otros elementos cercanos. El color de esta zona también determina la reflectancia del código (oscuro sobre
+          claro
+          o claro sobre oscuro).
+        </p>
+      </section>
 
-      <div class="module-legend module-legend--alignment-pattern-dark"> negro</div>
-      <div class="module-legend module-legend--alignment-pattern-light"> blanco</div>
+      <section>
+        <h3>Patrones de detección de posición</h3>
 
-      <p>
-        Son patrones de 5x5 módulos. El número y posición de estos patrones depende de la
-        versión. A medida que el tamaño del código QR aumenta, se añaden más en ubicaciones específicas para
-        proporcionar estabilidad adicional.
-      </p>
+        <div class="module-legend module-legend--position-pattern-dark"> negro</div>
+        <div class="module-legend module-legend--position-pattern-light"> blanco</div>
 
-      <table id="alignment-pattern-table">
-        <thead>
-          <tr>
-            <th>Versión</th>
-            <th>Número de patrones</th>
-            <th>Posición del módulo central (filas y columnas)</th>
-          </tr>
-        </thead>
+        <p>
+          Son patrones de 7x7 módulos separados del código por tiras de módulos blancos a su alrededor. Se colocan
+          siempre
+          en las esquinas superior izquierda, superior derecha e inferior izquierda.
+        </p>
 
-        <tbody></tbody>
-      </table>
+        <p>
+          La posición de estos tres patrones en las esquinas del código QR forma un triángulo isósceles, lo que permite
+          al
+          escáner reconocer el código QR incluso si está inclinado, girado, o si se lee desde cualquier dirección o en
+          un
+          espejo.
+        </p>
+      </section>
 
-      <p>
-        La función de estos módulos es proporcionar una referencia adicional a los escáneres para corregir pequeñas
-        deformaciones o distorsiones por si el código está impreso en una superficie curva, se ha doblado, o si el
-        lector no está perfectamente alineado. Aseguran que la cuadrícula del código se mantenga recta.
-      </p>
-    </section>
+      <section>
+        <h3>Patrones de alineación</h3>
 
-    <section>
-      <h2>Patrones de temporización</h2>
+        <div class="module-legend module-legend--alignment-pattern-dark"> negro</div>
+        <div class="module-legend module-legend--alignment-pattern-light"> blanco</div>
 
-      <div class="module-legend module-legend--timing-pattern-dark"> negro</div>
-      <div class="module-legend module-legend--timing-pattern-light"> blanco</div>
+        <p>
+          Son patrones de 5x5 módulos. El número y posición de estos patrones depende de la
+          versión. A medida que el tamaño del código QR aumenta, se añaden más en ubicaciones específicas para
+          proporcionar estabilidad adicional.
+        </p>
 
-      <p>
-        Son patrones de módulos alternados (oscuro y claro) que se sitúan en la fila y columna 7 entre el patrón de
-        posición de la esquina superior izquierda y los patrones de posición de la esquina superior derecha y esquina
-        inferior izquierda.
-      </p>
-
-      <p>
-        Su función es ayudar al lector a determinar el tamaño o escala de los módulos y la dimensión del código QR.
-        Ayuda a mantener la cuadrícula alineada correctamente tratando de mantener la uniformidad en la separación de
-        los módulos, facilitando una lectura precisa.
-      </p>
-    </section>
-
-    <section>
-      <h2>Información sobre la versión</h2>
-
-      <div class="module-legend module-legend--version-information-dark"> negro</div>
-      <div class="module-legend module-legend--version-information-light"> blanco</div>
-
-      <p>
-        Estos módulos sólo aparecen a partir de la versión 7. Consiste en un patrón de 18 módulos que proporciona datos
-        acerca de la versión específica del código QR que se está utilizando. En estas versiones tan grandes, sin la
-        información de versión, un escáner podría tener dificultades para identificar el tamaño específico del código QR
-        y para determinar cómo debe organizar los datos que extrae de él.
-      </p>
-
-      <p>
-        Independientemente de la versión del código que hemos generado nosotros, veamos como se calcula. Primero se
-        codifica el número de la versión a binario (con seis bits, <span class="monospace"><span
-            class="qr-code-version">2</span> = <span class="qr-code-version-binary">000010</span></span>).
-        La información binaria de la versión se convierte en un patrón de 18 bits que contiene 6 bits de datos (la
-        <!-- TODO add link to a page explaining 'corrección de errores BCH (Bose-Chaudhuri-Hocquenghem)' -->
-        versión) y 12 bits de código de corrección de errores BCH (Bose-Chaudhuri-Hocquenghem). Para calcular estos 12
-        bits adicionales que se concatenarán a los bits de la versión seguimos este proceso:
-      </p>
-
-      <ol>
-        <li>
-          Concatenamos doce ceros a los bits de la versión:
-          <span class="monospace">
-            <span class="qr-code-version-binary">001001</span><span class="appended-bits">000000000000</span>
-          </span>
-        </li>
-        <li>Calculamos el resto de dividirlo por <span class="monospace version-generator">1111100100101</span></li>
-        <ol>
-          <li>Cogemos los 13 primeros bits</li>
-          <li>Si el primer bit es <span class="monospace">0</span>, le descartamos y bajamos el siguiente bit</li>
-          <li>
-            Si el primer bit es <span class="monospace">1</span>, realizamos un XOR, descartamos el primer cero y
-            bajamos el siguiente bit
-          </li>
-          <li>Así hasta que no queden más bits que bajar</li>
-        </ol>
-        <li>El resto que quede son los bits de corrección</li>
-      </ol>
-
-      <svg id="calculation-of-version-correction-bits"></svg>
-
-      <p>
-        Tenemos que los 18 bits nos quedan
-        <span class="monospace">
-          <span class="qr-code-version-binary"></span><span class="version-correction-bits"></span></span>.
-        Estos se colocan por duplicado en los módulos reservados para ello:
-      </p>
-
-      <div id="version-pattern-completion-wrapper">
-        <figure>
-          <svg viewBox="0 0 6 3" id="version-pattern-completion-1"></svg>
-          <figcaption>Encima del patrón de posicion inferior izquierdo</figcaption>
-        </figure>
-
-        <figure>
-          <svg viewBox="0 0 3 6" id="version-pattern-completion-2"></svg>
-          <figcaption>A la izquierda del patrón de posicion superior derecho</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section>
-      <h2>Información del formato</h2>
-
-      <div class="module-legend module-legend--format-information-dark"> negro</div>
-      <div class="module-legend module-legend--format-information-light"> blanco</div>
-
-
-      <p>
-        Consiste en un patrón de 15 módulos situado también junto a los patrones de posición. Sirve para identificar
-        el nivel de corrección de errores elegido y el patrón de máscara usados en el código.
-      </p>
-
-      <p>
-        El nivel de corrección de errores ya lo hemos mencionado, y el patrón de máscara lo estudiaremos en profundidad
-        más adelante. Por ahora nos basta con saber que existen un total de ocho, y que se codifican como se indica en
-        la tabla de abajo.
-      </p>
-
-      <p>
-        Los 15 módulos se dividen en 5 módulos de datos y 10 módulos de corrección de errores. De los 5 módulos de
-        datos, 2 de ellos se reservan para el nivel de corrección de errores, y los otros 3 son para identificar una de
-        las ocho posibles máscaras que se pueden aplicar. Para calcular el color de los 15 módulos, es similar a como
-        hicimos con la información de la versión. Primero codificamos el nivel de corrección de errores elegido y le
-        concatenamos el código asociado a la máscara aplicada, según estas tablas:
-      </p>
-
-      <!-- TODO select error level selected -->
-      <table id="error-capacity-codification-table">
-        <thead>
-          <th>L</th>
-          <th>M</th>
-          <th>Q</th>
-          <th>H</th>
-        </thead>
-        <tbody>
-          <td>01</td>
-          <td>00</td>
-          <td>11</td>
-          <td>10</td>
-        </tbody>
-      </table>
-
-      <!-- TODO select mask  selected -->
-      <div id="mask-codification-table-wrapper">
-        <table id="mask-codification-table">
+        <table id="alignment-pattern-table">
           <thead>
-            <th>Máscara 1</th>
-            <th>Máscara 2</th>
-            <th>Máscara 3</th>
-            <th>Máscara 4</th>
-            <th>Máscara 5</th>
-            <th>Máscara 6</th>
-            <th>Máscara 7</th>
-            <th>Máscara 8</th>
+            <tr>
+              <th>Versión</th>
+              <th>Número de patrones</th>
+              <th>Posición del módulo central (filas y columnas)</th>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+
+        <p>
+          La función de estos módulos es proporcionar una referencia adicional a los escáneres para corregir pequeñas
+          deformaciones o distorsiones por si el código está impreso en una superficie curva, se ha doblado, o si el
+          lector no está perfectamente alineado. Aseguran que la cuadrícula del código se mantenga recta.
+        </p>
+      </section>
+
+      <section>
+        <h3>Patrones de temporización</h3>
+
+        <div class="module-legend module-legend--timing-pattern-dark"> negro</div>
+        <div class="module-legend module-legend--timing-pattern-light"> blanco</div>
+
+        <p>
+          Son patrones de módulos alternados (oscuro y claro) que se sitúan en la fila y columna 7 entre el patrón de
+          posición de la esquina superior izquierda y los patrones de posición de la esquina superior derecha y esquina
+          inferior izquierda.
+        </p>
+
+        <p>
+          Su función es ayudar al lector a determinar el tamaño o escala de los módulos y la dimensión del código QR.
+          Ayuda a mantener la cuadrícula alineada correctamente tratando de mantener la uniformidad en la separación de
+          los módulos, facilitando una lectura precisa.
+        </p>
+      </section>
+
+      <section>
+        <h3>Información sobre la versión</h3>
+
+        <div class="module-legend module-legend--version-information-dark"> negro</div>
+        <div class="module-legend module-legend--version-information-light"> blanco</div>
+
+        <p>
+          Estos módulos sólo aparecen a partir de la versión 7. Consiste en un patrón de 18 módulos que proporciona
+          datos
+          acerca de la versión específica del código QR que se está utilizando. En estas versiones tan grandes, sin la
+          información de versión, un escáner podría tener dificultades para identificar el tamaño específico del código
+          QR
+          y para determinar cómo debe organizar los datos que extrae de él.
+        </p>
+
+        <p>
+          Independientemente de la versión del código que hemos generado nosotros, veamos como se calcula. Primero se
+          codifica el número de la versión a binario (con seis bits, <span class="monospace"><span
+              class="qr-code-version">2</span> = <span class="qr-code-version-binary">000010</span></span>).
+          La información binaria de la versión se convierte en un patrón de 18 bits que contiene 6 bits de datos (la
+          <!-- TODO add link to a page explaining 'corrección de errores BCH (Bose-Chaudhuri-Hocquenghem)' -->
+          versión) y 12 bits de código de corrección de errores BCH (Bose-Chaudhuri-Hocquenghem). Para calcular estos 12
+          bits adicionales que se concatenarán a los bits de la versión seguimos este proceso:
+        </p>
+
+        <ol>
+          <li>
+            Concatenamos doce ceros a los bits de la versión:
+            <span class="monospace">
+              <span class="qr-code-version-binary">001001</span><span class="appended-bits">000000000000</span>
+            </span>
+          </li>
+          <li>Calculamos el resto de dividirlo por <span class="monospace version-generator">1111100100101</span></li>
+          <ol>
+            <li>Cogemos los 13 primeros bits</li>
+            <li>Si el primer bit es <span class="monospace">0</span>, le descartamos y bajamos el siguiente bit</li>
+            <li>
+              Si el primer bit es <span class="monospace">1</span>, realizamos un XOR, descartamos el primer cero y
+              bajamos el siguiente bit
+            </li>
+            <li>Así hasta que no queden más bits que bajar</li>
+          </ol>
+          <li>El resto que quede son los bits de corrección</li>
+        </ol>
+
+        <svg id="calculation-of-version-correction-bits"></svg>
+
+        <p>
+          Tenemos que los 18 bits nos quedan
+          <span class="monospace">
+            <span class="qr-code-version-binary"></span><span class="version-correction-bits"></span></span>.
+          Estos se colocan por duplicado en los módulos reservados para ello:
+        </p>
+
+        <div id="version-pattern-completion-wrapper">
+          <figure>
+            <svg viewBox="0 0 6 3" id="version-pattern-completion-1"></svg>
+            <figcaption>Encima del patrón de posicion inferior izquierdo</figcaption>
+          </figure>
+
+          <figure>
+            <svg viewBox="0 0 3 6" id="version-pattern-completion-2"></svg>
+            <figcaption>A la izquierda del patrón de posicion superior derecho</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section>
+        <h3>Información del formato</h3>
+
+        <div class="module-legend module-legend--format-information-dark"> negro</div>
+        <div class="module-legend module-legend--format-information-light"> blanco</div>
+
+
+        <p>
+          Consiste en un patrón de 15 módulos situado también junto a los patrones de posición. Sirve para identificar
+          el nivel de corrección de errores elegido y el patrón de máscara usados en el código.
+        </p>
+
+        <p>
+          El nivel de corrección de errores ya lo hemos mencionado, y el patrón de máscara lo estudiaremos en
+          profundidad
+          más adelante. Por ahora nos basta con saber que existen un total de ocho, y que se codifican como se indica en
+          la tabla de abajo.
+        </p>
+
+        <p>
+          Los 15 módulos se dividen en 5 módulos de datos y 10 módulos de corrección de errores. De los 5 módulos de
+          datos, 2 de ellos se reservan para el nivel de corrección de errores, y los otros 3 son para identificar una
+          de
+          las ocho posibles máscaras que se pueden aplicar. Para calcular el color de los 15 módulos, es similar a como
+          hicimos con la información de la versión. Primero codificamos el nivel de corrección de errores elegido y le
+          concatenamos el código asociado a la máscara aplicada, según estas tablas:
+        </p>
+
+        <!-- TODO select error level selected -->
+        <table id="error-capacity-codification-table">
+          <thead>
+            <th>L</th>
+            <th>M</th>
+            <th>Q</th>
+            <th>H</th>
           </thead>
           <tbody>
-            <td>000</td>
-            <td>001</td>
-            <td>010</td>
-            <td>011</td>
-            <td>100</td>
-            <td>101</td>
-            <td>110</td>
-            <td>111</td>
+            <td>01</td>
+            <td>00</td>
+            <td>11</td>
+            <td>10</td>
           </tbody>
         </table>
-      </div>
 
-      <p>
-        En nuestro caso los bits de datos quedarían
-        <span class="monospace">
-          <span class="error-capacity-codification-bits"></span><span class="mask-codification-bits"></span>.
-        </span>
-        Ahora tenemos que calcular los 10 bits de corrección de errores:
-      </p>
-
-
-      <ol>
-        <li>
-          Concatenamos diez ceros a los bits de datos:
-          <span class="monospace">
-            <span class="format-information-data-bits"></span><span class="appended-bits">0000000000</span>
-          </span>
-        </li>
-        <li>Calculamos el resto de dividirlo por <span class="monospace format-generator">10100110111</span></li>
-        <ol>
-          <li>Cogemos los 11 primeros bits</li>
-          <li>Si el primer bit es <span class="monospace">0</span>, le descartamos y bajamos el siguiente bit</li>
-          <li>
-            Si el primer bit es <span class="monospace">1</span>, realizamos un XOR, descartamos el primer cero y
-            bajamos el siguiente bit
-          </li>
-          <li>Así hasta que no queden más bits que bajar</li>
-        </ol>
-        <li>El resto que quede son los bits de corrección</li>
-      </ol>
-
-      <svg id="calculation-of-format-correction-bits"></svg>
-
-      <p>
-        Tenemos que los 15 bits nos quedan
-        <span class="monospace">
-          <span class="format-information-data-bits"></span><span class="format-information-correction-bits"></span>.
-        </span>
-      </p>
-
-      <p>
-        Y para asegurarse de que nunca serán todo ceros, se aplica un XOR con la máscara <span
-          class="monospace">101010000010010</span>, de forma que el resultado final a colocar en el código QR es
-        <span id="information-format-15-bits-after-xor" class="monospace"></span>. Estos se colocan por duplicado en los
-        módulos reservados para ello. Otro detalle a tener en cuenta, es que el módulo al final de la tira de módulos de
-        abajo a la izquierda, es siempre de color oscuro. Porque así lo decidió el creador.
-      </p>
-
-      <figure id="format-pattern-completion-wrapper">
-        <div>
-          <svg viewBox="0 0 9 9" id="format-pattern-completion-1"></svg>
-          <svg viewBox="0 0 1 9" id="format-pattern-completion-2"></svg>
-          <svg viewBox="0 0 9 1" id="format-pattern-completion-3"></svg>
+        <!-- TODO select mask  selected -->
+        <div id="mask-codification-table-wrapper">
+          <table id="mask-codification-table">
+            <thead>
+              <th>Máscara 1</th>
+              <th>Máscara 2</th>
+              <th>Máscara 3</th>
+              <th>Máscara 4</th>
+              <th>Máscara 5</th>
+              <th>Máscara 6</th>
+              <th>Máscara 7</th>
+              <th>Máscara 8</th>
+            </thead>
+            <tbody>
+              <td>000</td>
+              <td>001</td>
+              <td>010</td>
+              <td>011</td>
+              <td>100</td>
+              <td>101</td>
+              <td>110</td>
+              <td>111</td>
+            </tbody>
+          </table>
         </div>
 
-        <figcaption>
-          Patrones de formato junto a los patrones de posición superior izquierdo, inferior izquierdo y superior
-          derecho respectivamente
-        </figcaption>
-      </figure>
+        <p>
+          En nuestro caso los bits de datos quedarían
+          <span class="monospace">
+            <span class="error-capacity-codification-bits"></span><span class="mask-codification-bits"></span>.
+          </span>
+          Ahora tenemos que calcular los 10 bits de corrección de errores:
+        </p>
+
+
+        <ol>
+          <li>
+            Concatenamos diez ceros a los bits de datos:
+            <span class="monospace">
+              <span class="format-information-data-bits"></span><span class="appended-bits">0000000000</span>
+            </span>
+          </li>
+          <li>Calculamos el resto de dividirlo por <span class="monospace format-generator">10100110111</span></li>
+          <ol>
+            <li>Cogemos los 11 primeros bits</li>
+            <li>Si el primer bit es <span class="monospace">0</span>, le descartamos y bajamos el siguiente bit</li>
+            <li>
+              Si el primer bit es <span class="monospace">1</span>, realizamos un XOR, descartamos el primer cero y
+              bajamos el siguiente bit
+            </li>
+            <li>Así hasta que no queden más bits que bajar</li>
+          </ol>
+          <li>El resto que quede son los bits de corrección</li>
+        </ol>
+
+        <svg id="calculation-of-format-correction-bits"></svg>
+
+        <p>
+          Tenemos que los 15 bits nos quedan
+          <span class="monospace">
+            <span class="format-information-data-bits"></span><span class="format-information-correction-bits"></span>.
+          </span>
+        </p>
+
+        <p>
+          Y para asegurarse de que nunca serán todo ceros, se aplica un XOR con la máscara <span
+            class="monospace">101010000010010</span>, de forma que el resultado final a colocar en el código QR es
+          <span id="information-format-15-bits-after-xor" class="monospace"></span>. Estos se colocan por duplicado en
+          los
+          módulos reservados para ello. Otro detalle a tener en cuenta, es que el módulo al final de la tira de módulos
+          de
+          abajo a la izquierda, es siempre de color oscuro. Porque así lo decidió el creador.
+        </p>
+
+        <figure id="format-pattern-completion-wrapper">
+          <div>
+            <svg viewBox="0 0 9 9" id="format-pattern-completion-1"></svg>
+            <svg viewBox="0 0 1 9" id="format-pattern-completion-2"></svg>
+            <svg viewBox="0 0 9 1" id="format-pattern-completion-3"></svg>
+          </div>
+
+          <figcaption>
+            Patrones de formato junto a los patrones de posición superior izquierdo, inferior izquierdo y superior
+            derecho respectivamente
+          </figcaption>
+        </figure>
+      </section>
     </section>
 
     <section>
       <h2>Datos y corrección de errores</h2>
 
       <p>
-        Para introducir los datos en el código QR, primero los tenemos que codificar. Existen cuatro tipos de
-        codificación estándar:
+        Una vez visto como se rellenan los módulos comunes a todos los códigos QR, vamos a ver como se rellenan los
+        módulos que incluyen nuestros propios datos. Estos módulos los podemos dividir en tres partes principales:
+        módulos para datos, módulos para corrección de errores y módulos restantes.
+      </p>
+
+      <p>
+        Los módulos restantes son siempre blancos, y son módulos que sobran, es decir, que no se pueden usar para meter
+        más datos ni corregir errores.
+      </p>
+
+      <section>
+        <h3>Módulos para datos</h3>
+
+        <p>
+          Para introducir nuestro mensaje, dirección URL, o lo que esa, en el código QR, primero lo tenemos que
+          codificar, transformar a ceros y unos. La codificación dependerá del <strong>modo</strong> en el que se usa el
+          código QR. Existen varios (aunque cuatro principales):
+        </p>
+
+        <ul>
+          <li>
+            <strong>Numérico</strong> (0001): sólo permite dígitos del 0 al 9. Es el más eficiente en términos de
+            capacidad.
+          </li>
+
+          <li>
+            <strong>Alfanumérico</strong> (0010): permite los dígitos del 0 al 9, las letras de la A a la Z (sólo
+            mayúsculas) y algunos caracteres especiales.
+          </li>
+
+          <li>
+            <strong>Binario</strong> (<strong>0100</strong>): permite los caracteres de la tabla de codificación ISO/IEC
+            8859-1 (el alfabeto español y otros caracteres). Cada uno de estos caracteres (una R, un 2, un punto, etc)
+            se codifica con 8 módulos, es decir, un byte.
+          </li>
+
+          <li><strong>Kanji</strong> (1000): diseñada para caracteres Kanji/Kana del idioma japonés.</li>
+
+          <li>
+            Otros modos: permiten mezclar los modos anteriores para optimizar el tamaño (dividiendo el mensaje en
+            segmentos), usar caracteres de otros idiomas, dividir el código QR en otros más pequeños y luego leerlos por
+            separado y ordenarlos, y más cosas.
+          </li>
+        </ul>
+
+        <p>
+          El mensaje se analiza y se divide en segmentos que se codifican por separado en el modo más óptimo. En este
+          caso, para simplificar la creación del código QR, usaré sólamente un segmento para todo el mensaje en modo
+          binario. El mensaje introducido, queda codificado tal que así:
+        </p>
+
+        <div id="ascii-message-table"></div>
+
+        <p>
+          El siguiente paso es concatenar todos los segmentos codificados. Cada segmento tiene la siguiente estructura:
+        </p>
+
+        <ol>
+          <li>
+            <div class="data-module-legend">
+              <span>El modo</span>
+              <div class="module-legend module-legend--data-codification-format-dark"></div>
+              <div class="module-legend module-legend--data-codification-format-light"></div>
+            </div>
+
+            <ul>
+              <li>4 módulos (en nuestro caso 0100 para el formato binario)</li>
+            </ul>
+          </li>
+
+          <li>
+            <div class="data-module-legend">
+              <span>Número de caracteres introducido</span>
+              <div class="module-legend module-legend--number-of-characters-entered-dark"></div>
+              <div class="module-legend module-legend--number-of-characters-entered-light"></div>
+            </div>
+
+            <ul>
+              <li>Para modo binario, 8 módulos de la versión 1 a la 9 y 16 módulos de la versión 10 en adelante</li>
+            </ul>
+          </li>
+
+          <li>
+            <div class="data-module-legend">
+              <span>Los datos del segmento de nuestro mensaje</span>
+              <div class="module-legend module-legend--data-entered-dark"></div>
+              <div class="module-legend module-legend--data-entered-light"></div>
+            </div>
+          </li>
+        </ol>
+
+        <p>
+          Sabemos ya que cada versión de código QR tiene una capacidad máxima dependiendo del nivel de corrección de
+          errores. Al final del último segmento (si queda espacio), hay que añadir los bits de terminación, que no son
+          más
+          que cuatro módulos blancos (o cuatro ceros) que indican que no hay más segmentos.
+        </p>
+
+        <p>
+          Y si aún así, después de concatenar los segmentos y los bits de terminación, aún no se completa la capacidad
+          al 100 %, debemos añadir alternativamente los bytes <span class="monospace">11101100</span> y <span
+            class="monospace">00010001</span> hasta alcanzar la capacidad máxima.
+        </p>
+
+        <p>
+          Una vez lo tenemos todo concatenado hasta alcanzar la capacidad máxima, debemos dividirlo en diferentes
+          bloques de distintos tamaños. El número y tamaño de los bloques depende de la versión y capacidad de
+          corrección de errores elegida. En este ejemplo, queda divido en estos bloques (cada línea, un bloque
+          diferente):
+        </p>
+
+        <div id="how-to-split-in-blocks"></div>
+      </section>
+
+      <section>
+
+        <!-- TODO seguir por esta seccion -->
+
+        <h3>Módulos para corrección de errores</h3>
+
+        <p>
+          Cada bloque de datos, tiene asociado unos módulos de corrección de errores. Sin ellos, bastaría que se
+          manchase el código, se deteriorara o se rompiera un cachito para perder lo que hay escrito en él.
+        </p>
+
+        <p>
+          Iré rápido en esta sección porque no es fácil de explicar y requiere muchos cálculos, matemáticas, teoría de
+          códigos, división de polinomios, cuerpos de Galois, códigos Reed Solomon, etc. Es la parte que más me ha
+          costado de implementar. Consiste básicamente en añadir redundancia a nuestro mensaje.
+        </p>
+
+        <p>
+          Dependiendo de la versión y de la capacidad de corrección de errores elegida, se requiere una cantidad
+          diferente de módulos para la corrección de errores. Hay definidos hasta treinta y seis polinomios dependiendo
+          de esta cantidad. Para obtener x cantidad de módulos de corrección se usa un polinomio, para otra cantidad se
+          usa otro polinomio, y así, hasta treinta y seis posibilidades.
+        </p>
+
+        <p>
+          Por cada bloque de datos que hemos generado anteriormente, se calcula un bloque de corrección de errores. Los
+          bloques de datos se dividen en bytes, y cada uno de ellos representa el coeficiente de un polinomio. Este
+          polinomio se multiplica por el grado del divisor y a continuación se realiza la división. El resto de la
+          división, son los bits de corrección de errores. Es algo similar, pero no igual, a como hicimos para calcular
+          la corrección de errores de la versión y el formato.
+        </p>
+      </section>
+    </section>
+
+    <!-- TODO from here down, is not review, it is the old version -->
+
+    <section>
+      <h2>Añadir todo al código QR</h2>
+
+      <p>
+        Una vez tenemos todo codificado y tenemos también los bits de corrección de errores para cada bloque, es hora de
+        empezar a meterlos en el código QR.
+      </p>
+
+      <p>
+        Los datos se comienzan a introducir por la esquina inferior derecha en zigzag en columnas de dos módulos de
+        ancho. Se sube hacia arriba y cuando se llega al final, se sigue por la siguiente columna hacia abajo, y luego
+        hacia arriba, y así repetidamente. Si entre medias hay algún módulo de alineamiento u otro de este tipo,
+        simplemente se salta y se establece en el siguiente módulo libre.
+      </p>
+
+      <p>
+        Primero se comienza introduciendo los datos, una palabra (8 bits) de cada bloque alternativamente. Segundo los
+        módulos de corrección de errores, igualmente, una palabra alternativamente de cada bloque. Y por último, módulos
+        de color blanco para el sobrante.
+      </p>
+
+      <svg id="qr-code-data-region-explained"></svg>
+    </section>
+
+    <section>
+      <h2>Máscaras</h2>
+
+      <p>
+        Es posible que entre los datos y la corrección de errores los módulos formen por sí solos patrones indeseados, o
+        zonas blancas y negras demasiado grandes. Esto podría confundir a los lectores para leer el código QR
+        correctamente.
+      </p>
+
+      <p>
+        Para evitar esos patrones indeseables, se usan las máscaras. Estas máscaras lo que hacen es cambiar el color de
+        ciertos módulos para romper esas zonas o patrones. Si el módulo del código QR coincide con uno de la máscara,
+        simplemente se cambia su color. Las máscaras sólo actúan sobre los módulos de datos, corrección de errores y los
+        restantes.
+      </p>
+
+      <p>
+        Existen hasta un total de ocho máscaras.
+      </p>
+
+      <div id="masks-container">
+        <figure>
+          <svg id="mask-000"></svg>
+          <figcaption>máscara 1 (000)</figcaption>
+        </figure>
+        <figure>
+          <svg id="mask-001"></svg>
+          <figcaption>máscara 2 (001)</figcaption>
+        </figure>
+        <figure>
+          <svg id="mask-010"></svg>
+          <figcaption>máscara 3 (010)</figcaption>
+        </figure>
+        <figure>
+          <svg id="mask-011"></svg>
+          <figcaption>máscara 4 (011)</figcaption>
+        </figure>
+        <figure>
+          <svg id="mask-100"></svg>
+          <figcaption>máscara 5 (100)</figcaption>
+        </figure>
+        <figure>
+          <svg id="mask-101"></svg>
+          <figcaption>máscara 6 (101)</figcaption>
+        </figure>
+        <figure>
+          <svg id="mask-110"></svg>
+          <figcaption>máscara 7 (110)</figcaption>
+        </figure>
+        <figure>
+          <svg id="mask-111"></svg>
+          <figcaption>máscara 8 (111)</figcaption>
+        </figure>
+      </div>
+
+      <p>
+        Cada máscara se aplica por separado al código QR y se evalúa el
+        resultado. Concretamente se evalúa lo siguiente:
       </p>
 
       <ul>
-        <li>Numérica (0001): sólo dígitos del 0 al 9. Es el más eficiente en términos de capacidad.</li>
-        <li>
-          Alfanumérica (0010): incluye los dígitos del 0 al 9, las letras de la A a la Z (sólo mayúsculas) y algunos
-          caracteres especiales.
-        </li>
-        <li>
-          Binaria (<strong>0100</strong>): codifica datos en formato de bytes, es decir, 8 módulos por caracter. Usa la
-          tabla de codificación ISO/IEC 8859-1 (el alfabeto español y otros caracteres).
-        </li>
-        <li>Kanji (1000): diseñada para caracteres Kanji/Kana del idioma japonés.</li>
+        <li>Que no haya patrones de cinco o más módulos seguidos.</li>
+        <li>Que no haya muchos bloques de 2x2 del mismo color.</li>
+        <li>Que no exista el patron 1:1:3:1:1 como en los patrones de posicionamiento.</li>
+        <li>Que el porcentaje de módulos claros y oscuros sea más o menos igual.</li>
       </ul>
 
       <p>
-        En mi caso, por sencillez, los codifico siempre en binario, de la siguiente forma:
+        Tras aplicar las ocho máscaras por separado, la que obtenga menor penalización en función de los factores
+        anteriores es la que gana y finalmente se aplica. También es esta la que se codifica en el patrón de formato,
+        que ya hablamos de ello.
       </p>
 
-      <div id="ascii-message-table"></div>
+      <p>
+        Y tras aplicar la máscara, ya estaría. Ya tenemos nuestro código QR.
+      </p>
     </section>
-
-    <p>
-      Los datos se comienzan introduciendo por abajo a la derecha en zigzag y evitando los módulos reservados para las
-      secciones vistas anteriormente, en este orden:
-    </p>
-
-    <ol>
-      <li>
-        <div class="data-module-legend">
-          <span>Formato de codificación</span>
-          <div class="module-legend module-legend--data-codification-format-dark"></div>
-          <div class="module-legend module-legend--data-codification-format-light"></div>
-        </div>
-
-        <ul>
-          <li>4 módulos (en nuestro caso 0100 para el formato binario)</li>
-        </ul>
-      </li>
-      <li>
-        <div class="data-module-legend">
-          <span>Número de caracteres introducido</span>
-          <div class="module-legend module-legend--number-of-characters-entered-dark"></div>
-          <div class="module-legend module-legend--number-of-characters-entered-light"></div>
-        </div>
-
-        <ul>
-          <li>8 módulos para las versiones de la 1 a la 9</li>
-          <li>16 módulos para las versiones de la 9 a la 40</li>
-        </ul>
-      </li>
-      <li>
-        <div class="data-module-legend">
-          <span>Los datos, nuestros datos</span>
-          <div class="module-legend module-legend--data-entered-dark"></div>
-          <div class="module-legend module-legend--data-entered-light"></div>
-        </div>
-      </li>
-      <li>La corección de errores (incluyendo el formato de codificación y la longitud del mensaje)</li>
-      <li>
-        Relleno con módulos claros para completar una palabra de 8 módulos (debido a que el formato de codificación solo
-        usa 4, tenemos que añadir otros 4)
-      </li>
-    </ol>
-
-    <!-- TODO seguir desde aqui -->
-
-    <!-- TODO show image pattern -->
-    <svg id="how-to-enter-data-explanation"></svg>
-
-    <!-- TODO explicar como se añade la corrección de errores en funcion de la longitud del mensaje -->
-
-    <p>
-      Una vez todo completado, el restante se llena con píxeles en blanco, y se aplica una máscara.
-
-      <!-- 
-https://www.thonky.com/qr-code-tutorial/error-correction-coding
-If the string is still not long enough to fill the maximum capacity, add the following bytes to the end of the string, repeating until the string has reached the maximum length:
-11101100 00010001
-
-These bytes are equivalent to 236 and 17, respectively. They are specifically required by the QR code specification to be added if the bit string is too short at this stage.
--->
-    </p>
-
-    <p>
-      Hay hasta ocho tipos de máscara que se pueden aplicar. Las máscaras permiten mezclar los píxeles para evitar que
-      haya zonas muy blancas o muy negras, y que sea más fácil para el lector identificar el número o color de cada
-      píxel.
-    </p>
-
-    <!-- TODO show different masks -->
-
-    <p>
-      Las máscaras se aplican por separado al código con los datos, y se les asigna una puntuación. La que menor
-      puntuación consigue, es la que finalmente se aplica.
-    </p>
-
-    <p>
-      Y ya está, ya tenemos el código QR.
-    </p>
   </section>
 </body>
 

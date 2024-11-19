@@ -20,8 +20,8 @@ export const versionInformationDarkColor = '#ee0000';
 export const formatInformationLightColor = '#f8a4ff';
 export const formatInformationDarkColor = '#f147ff';
 
-export const dataCodificationFormatLightColor = '#62d3ff';
-export const dataCodificationFormatDarkColor = '#5a5aff';
+export const modeLightColor = '#62d3ff';
+export const modeDarkColor = '#5a5aff';
 
 export const numberOfCharactersEnteredLightColor = '#f5f584';
 export const numberOfCharactersEnteredDarkColor = '#b4b400';

@@ -1,5 +1,6 @@
 import { ELEMENTS } from './elements';
 import { QR_CODE_INFO } from './qr-code-info';
+import { numberToBinary } from './qr-code-utils';
 
 //#region versions
 
@@ -99,3 +100,42 @@ export function hightlightVersionInAlignmentPatternsTable(version) {
 }
 
 //#endregion alignment
+
+//#region message to ascii
+export function createMessageToAsciiTable(message) {
+  ELEMENTS.ASCII_MESSAGE_TABLE.innerHTML = '';
+  for (let i = 0; i < message.length; i++) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.classList.add('element');
+    svg.setAttribute('viewBox', ' 0 0 24 7');
+
+    const header = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    header.classList.add('header');
+    header.setAttribute('x', '12');
+    header.setAttribute('y', '1.6');
+    header.textContent = `${message[i]} (${message.charCodeAt(i)})`;
+    svg.append(header);
+
+    for (let j = 0; j < 8; j++) {
+      const index = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      index.classList.add('index');
+      index.setAttribute('x', `${j * 2.6 + 3}`);
+      index.setAttribute('y', '3.8');
+      index.textContent = `${message[i]}${7 - j} `;
+      svg.append(index);
+    }
+
+    const charInBinary = Array.from(numberToBinary(message.charCodeAt(i)));
+    for (let j = 0; j < 8; j++) {
+      const binary = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      binary.classList.add('bit');
+      binary.setAttribute('x', `${j * 2.6 + 3}`);
+      binary.setAttribute('y', '5.7');
+      binary.textContent = `${charInBinary[j]}`;
+      svg.append(binary);
+    }
+
+    ELEMENTS.ASCII_MESSAGE_TABLE.append(svg);
+  }
+}
+//#endregion

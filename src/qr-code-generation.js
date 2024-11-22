@@ -1,11 +1,9 @@
 import {
-  calculateCorrectionBitsForFormat,
-  calculateCorrectionBitsForVersion,
-  showFormatPatternCompletion,
-  showHowFormatCorrectionBitsAreCalculated,
-  showHowVersionCorrectionBitsAreCalculated,
-  showVersionPatternCompletion,
-} from './calculation-of-correction-bits';
+  FORMAT_GENERATOR,
+  generateBchErrorCorrectionBits,
+  showSvgHowBchErrorCorrectionBitsAreCalculated,
+  VERSION_GENERATOR,
+} from './bch-error-correction-bits';
 import {
   alignmentPatternDarkColor,
   alignmentPatternLightColor,
@@ -33,7 +31,6 @@ import { CSS_CLASSES, CSS_IDS } from './css-selectors';
 import { ELEMENTS } from './elements';
 import { EXPONENTIALS_TABLE } from './galois-field';
 import { applyMask, DATA_MASKS_PATTERNS, evaluateQrCodeAfterMaskApplied, EXCLUDE_FROM_MASK_COLOR } from './masking';
-import { QR_CODE_INFO } from './qr-code-info';
 import {
   paintModulesForAllAlignmentPatterns,
   paintModulesForAllFormatPatterns,
@@ -42,6 +39,7 @@ import {
   paintModulesForAllVersionPatterns,
   paintModulesForDataAndErrorRegion,
 } from './qr-code-painters';
+import { QR_CODE_STANDARS } from './qr-code-standards';
 import {
   applyXOR,
   asciiToBinary,
@@ -54,14 +52,13 @@ import {
   splitInBytes,
 } from './qr-code-utils';
 import { divideBinaryPolinomials, GENERATOR_POLYNOMIALS } from './reed-salomon';
-import {
-  createMessageToAsciiTable,
-  hightlightVersionInAlignmentPatternsTable,
-  hightlightVersionInVersionsTable
-} from './table-handlers';
+import { createMessageToAsciiTable, hightlightVersionInAlignmentPatternsTable, hightlightVersionInVersionsTable } from './table-handlers';
+import { showFormatPatternCompletion, showVersionPatternCompletion } from './version-and-format-svg';
 
 export function generateQrCode(message, errorCorrectionLevel) {
-  const QR_CODE_INFO_TO_USE = QR_CODE_INFO.find((qr) => qr.errorCorrectionLevel[errorCorrectionLevel].maxMessageLength >= message.length);
+  const QR_CODE_INFO_TO_USE = QR_CODE_STANDARS.find(
+    (qr) => qr.errorCorrectionLevel[errorCorrectionLevel].maxMessageLength >= message.length
+  );
 
   if (QR_CODE_INFO_TO_USE === null) {
     // TODO check it is possible to encode the data in a qr code, or if it is too big, show message
@@ -75,7 +72,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
   console.debug('%cversion, version pattern modules calculation', 'background: #f99');
   const VERSION_NUMBER_IN_BINARY = numberToBinary(QR_CODE_INFO_TO_USE.version, 6);
   console.debug(`VERSION_NUMBER_IN_BINARY (${QR_CODE_INFO_TO_USE.version}): ${VERSION_NUMBER_IN_BINARY}`);
-  const ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN = calculateCorrectionBitsForVersion(VERSION_NUMBER_IN_BINARY);
+  const ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN = generateBchErrorCorrectionBits(VERSION_NUMBER_IN_BINARY, VERSION_GENERATOR);
   console.debug(
     `ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN: ${ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN} (length: ${ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN.length})`
   );
@@ -97,7 +94,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
   const FORTMAT_PATTERN_MASK = '101010000010010';
   console.debug('FORTMAT_PATTERN_MASK:', FORTMAT_PATTERN_MASK);
   const ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN = FORMATS_IN_BINARY.map((format) => ({
-    [format]: calculateCorrectionBitsForFormat(format),
+    [format]: generateBchErrorCorrectionBits(format, FORMAT_GENERATOR),
   })).reduce((prev, curr) => ({ ...prev, ...curr }), {});
   console.debug(`ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN:`, ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN);
   const FORMATS_PATTERN_AFTER_XOR_ALL_BITS = FORMATS_IN_BINARY.map((format) => ({
@@ -288,7 +285,11 @@ export function generateQrCode(message, errorCorrectionLevel) {
   // version pattern
   Array.from(document.querySelectorAll(CSS_CLASSES.QR_CODE_VERSION)).forEach((e) => (e.textContent = QR_CODE_INFO_TO_USE.version));
   Array.from(document.querySelectorAll(CSS_CLASSES.QR_CODE_VERSION_BINARY)).forEach((e) => (e.textContent = VERSION_NUMBER_IN_BINARY));
-  showHowVersionCorrectionBitsAreCalculated(VERSION_NUMBER_IN_BINARY);
+  showSvgHowBchErrorCorrectionBitsAreCalculated(
+    CSS_IDS.CALCULATION_OF_VERSION_CORRECTION_BITS,
+    VERSION_NUMBER_IN_BINARY,
+    VERSION_GENERATOR
+  );
   Array.from(document.querySelectorAll(CSS_CLASSES.QR_CODE_VERSION_BINARY)).forEach((e) => (e.textContent = VERSION_NUMBER_IN_BINARY));
   Array.from(document.querySelectorAll(CSS_CLASSES.VERSION_CORRECTION_BITS)).forEach(
     (e) => (e.textContent = ERROR_CORRECTION_BITS_FOR_VERSION_PATTERN)
@@ -307,7 +308,11 @@ export function generateQrCode(message, errorCorrectionLevel) {
     (e) =>
       (e.innerHTML = ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`])
   );
-  showHowFormatCorrectionBitsAreCalculated(`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`);
+  showSvgHowBchErrorCorrectionBitsAreCalculated(
+    CSS_IDS.CALCULATION_OF_FORMAT_CORRECTION_BITS,
+    `${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`,
+    FORMAT_GENERATOR
+  );
   document.querySelector(CSS_IDS.INFORMATION_FORMAT_15_BITS_AFTER_XOR).textContent =
     FORMATS_PATTERN_AFTER_XOR_ALL_BITS[`${SELECTED_ERROR_CORRECTION_LEVEL_CODIFICATION_IN_BINARY}${MASK_APPLIED}`];
   showFormatPatternCompletion(

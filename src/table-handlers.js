@@ -1,5 +1,5 @@
 import { ELEMENTS } from './elements';
-import { QR_CODE_INFO } from './qr-code-info';
+import { QR_CODE_STANDARS } from './qr-code-standards';
 import { numberToBinary } from './qr-code-utils';
 
 //#region versions
@@ -7,7 +7,7 @@ import { numberToBinary } from './qr-code-utils';
 export function createVersionsTable() {
   const versionsTableBody = ELEMENTS.VERSIONS_TABLE.querySelector('tbody');
 
-  QR_CODE_INFO.forEach((v) => {
+  QR_CODE_STANDARS.forEach((v) => {
     const tr = document.createElement('tr');
 
     const td1 = document.createElement('td');
@@ -62,7 +62,7 @@ export function hightlightVersionInVersionsTable(version, errorCorrectionLevel) 
 export function createAlignmentPatternsTable() {
   const bodyTable = ELEMENTS.ALIGNMENT_PATTERN_TABLE.querySelector('tbody');
 
-  QR_CODE_INFO.forEach((version) => {
+  QR_CODE_STANDARS.forEach((version) => {
     const tr = document.createElement('tr');
 
     const td1 = document.createElement('td');

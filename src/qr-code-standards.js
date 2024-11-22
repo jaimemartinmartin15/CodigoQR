@@ -1,6 +1,6 @@
 // Note: the errorCorrectionLevel.maxMessageLength is for binary data
 
-export const QR_CODE_INFO = [
+export const QR_CODE_STANDARS = [
   {
     version: 1,
     size: 21,

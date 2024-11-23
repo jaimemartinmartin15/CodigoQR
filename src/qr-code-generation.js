@@ -105,7 +105,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
 
   //#region mode and message length
   console.debug('%cmode and message length', 'background: #f99');
-  const MODE_BITS = '0100'; // in my case always Byte
+  const MODE_BITS = '0100'; // in my case always Binary
   const MESSAGE_LENGTH_IN_BINARY = getMessageLengthAsBinary(QR_CODE_INFO_TO_USE.version, message.length);
   console.debug(`MESSAGE_LENGTH_IN_BINARY (${message.length}): ${MESSAGE_LENGTH_IN_BINARY}`);
   //#endregion
@@ -123,19 +123,19 @@ export function generateQrCode(message, errorCorrectionLevel) {
   );
   //#endregion
 
-  //#region padding codewords and teminator
-  console.debug('%cpadding codewords and teminator', 'background: #f99');
+  //#region teminator and padding codewords
+  console.debug('%cteminator and padding codewords', 'background: #f99');
+  const TERMINATOR = '0000'; // for all versions and modes
   const PADDING_CODEWORDS = getPaddingCodewords(
     QR_CODE_INFO_TO_USE.errorCorrectionLevel[errorCorrectionLevel].maxMessageLength,
     message.length
   );
   console.debug(`PADDING_CODEWORDS: ${PADDING_CODEWORDS || "''"}`, '\n', splitInBytes(PADDING_CODEWORDS).join(' '));
-  const TERMINATOR = '0000'; // for all versions and modes
   //#endregion
 
   //#region bit stream
   console.debug('%cbit stream', 'background: #f99');
-  const DATA_BIT_STREAM = `${MODE_BITS}${MESSAGE_LENGTH_IN_BINARY}${MESSAGE_IN_BINARY}${TERMINATOR}${PADDING_CODEWORDS}`; // TODO check if terminator is last or not
+  const DATA_BIT_STREAM = `${MODE_BITS}${MESSAGE_LENGTH_IN_BINARY}${MESSAGE_IN_BINARY}${TERMINATOR}${PADDING_CODEWORDS}`;
   console.debug(
     `DATA_BIT_STREAM (${DATA_BIT_STREAM.length / 8} codewords): ${DATA_BIT_STREAM}`,
     '\n',
@@ -419,6 +419,4 @@ export function generateQrCode(message, errorCorrectionLevel) {
     paintSvgQrCode(`#mask-${maskId}`, applyMask(maskId, qrCodeMatrix), { withGrid: false, margin: 0 });
   });
   //#endregion
-
-  window.scrollTo(0, document.body.scrollHeight);
 }

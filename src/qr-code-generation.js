@@ -445,7 +445,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
     ...REMINDER_BITS_STREAM,
   ]);
 
-  paintSvgQrCode(CSS_IDS.QR_CODE_DATA_REGION_EXPLAINED, qrCodeWithOnlyData);
+  paintSvgQrCode(CSS_IDS.QR_CODE_DATA_REGION_EXPLAINED, qrCodeWithOnlyData, { labels: true });
   //#endregion
 
   //#region masks section

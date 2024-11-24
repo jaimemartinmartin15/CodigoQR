@@ -19,7 +19,7 @@ export function paintSvgQrCode(svgSelector, qrCodeMatrix, options) {
     for (let column = 0; column < qrCodeMatrix.length; column++) {
       const module = qrCodeMatrix[row][column];
       if (module.type !== MODULE_TYPE.NOT_DEFINED) {
-        let svgModule = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        const svgModule = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         svgModule.setAttribute('x', column);
         svgModule.setAttribute('y', row);
         svgModule.setAttribute('width', 1);
@@ -28,8 +28,15 @@ export function paintSvgQrCode(svgSelector, qrCodeMatrix, options) {
         svgModule.setAttribute('stroke-width', '0');
         svg.append(svgModule);
 
-        if (mergedOptions.labels) {
-          // TODO paint text label h7 h6 h5 h4 h3 ...
+        if (mergedOptions.labels && module.letter) {
+          const svgLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          svgLabel.setAttribute('x', column + 0.5);
+          svgLabel.setAttribute('y', row + 0.8);
+          svgLabel.setAttribute('text-anchor', 'middle');
+          svgLabel.setAttribute('fill', module.bit === '0' ? module.darkColor : module.lightColor);
+          svgLabel.textContent = module.letter;
+          svgLabel.style.fontSize = '0.04rem';
+          svg.append(svgLabel);
         }
       }
     }

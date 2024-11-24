@@ -1,9 +1,9 @@
 import {
   defaultDarkColor,
-  formatInformationDarkColor,
-  formatInformationLightColor,
-  versionInformationDarkColor,
-  versionInformationLightColor,
+  formatPatternDarkColor,
+  formatPatternLightColor,
+  versionPatternDarkColor,
+  versionPatternLightColor,
 } from './colors';
 import { ELEMENTS } from './elements';
 
@@ -53,8 +53,8 @@ export function showVersionPatternCompletion(bits) {
       5 - Math.floor(i / 3),
       2 - (i % 3),
       i,
-      versionInformationLightColor,
-      versionInformationDarkColor
+      versionPatternLightColor,
+      versionPatternDarkColor
     );
     // top right
     paintModule(
@@ -63,8 +63,8 @@ export function showVersionPatternCompletion(bits) {
       2 - (i % 3),
       5 - Math.floor(i / 3),
       i,
-      versionInformationLightColor,
-      versionInformationDarkColor
+      versionPatternLightColor,
+      versionPatternDarkColor
     );
   });
 }
@@ -77,23 +77,23 @@ export function showFormatPatternCompletion(bits) {
   // top left
   Array.from(bits.substring(0, 8)).forEach((b, i) => {
     const x = i >= 6 ? i + 1 : i;
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_1, b, x, 8, i, formatInformationLightColor, formatInformationDarkColor);
+    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_1, b, x, 8, i, formatPatternLightColor, formatPatternDarkColor);
   });
   Array.from(bits.substring(8)).forEach((b, i) => {
     const y = 7 - (i >= 1 ? i + 1 : i);
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_1, b, 8, y, i + 8, formatInformationLightColor, formatInformationDarkColor);
+    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_1, b, 8, y, i + 8, formatPatternLightColor, formatPatternDarkColor);
   });
 
   // bottom left
   Array.from(bits.substring(0, 7)).map((b, i) => {
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_2, b, 0, 8 - i, i, formatInformationLightColor, formatInformationDarkColor);
+    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_2, b, 0, 8 - i, i, formatPatternLightColor, formatPatternDarkColor);
   });
   // on the bottom left, this module is always dark
   paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_2, 0, 0, 1, 0, defaultDarkColor, defaultDarkColor);
 
   // top right
   Array.from(bits.substring(7)).map((b, i) => {
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_3, b, i, 0, i + 7, formatInformationLightColor, formatInformationDarkColor);
+    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_3, b, i, 0, i + 7, formatPatternLightColor, formatPatternDarkColor);
   });
 }
 

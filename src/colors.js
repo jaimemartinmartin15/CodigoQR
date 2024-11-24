@@ -1,9 +1,13 @@
-// like in styles.css
+// like in module-legend.css
 
-export const DEFAULT_COLOR = '#f0f0f0';
+export const DEFAULT_BG_COLOR = '#f0f0f0';
 
 export const defaultDarkColor = '#000';
 export const defaultLightColor = '#fff';
+
+export const finalModuleColors = { lightColor: defaultLightColor, darkColor: defaultDarkColor };
+
+//#region functional patterns
 
 export const positionPatternLightColor = '#93ff93';
 export const positionPatternDarkColor = '#00aa00';
@@ -14,23 +18,33 @@ export const alignmentPatternDarkColor = '#b4b400';
 export const timingPatternLightColor = '#62d3ff';
 export const timingPatternDarkColor = '#5a5aff';
 
-export const versionInformationLightColor = '#ff9494';
-export const versionInformationDarkColor = '#ee0000';
+export const versionPatternLightColor = '#ff9494';
+export const versionPatternDarkColor = '#ee0000';
 
-export const formatInformationLightColor = '#f8a4ff';
-export const formatInformationDarkColor = '#f147ff';
+export const formatPatternLightColor = '#f8a4ff';
+export const formatPatternDarkColor = '#f147ff';
+
+//#endregion
+
+//#region data region
 
 export const modeLightColor = '#62d3ff';
 export const modeDarkColor = '#5a5aff';
 
-export const numberOfCharactersEnteredLightColor = '#f5f584';
-export const numberOfCharactersEnteredDarkColor = '#b4b400';
+export const segmentLengthLightColor = '#f5f584';
+export const segmentLengthDarkColor = '#b4b400';
 
-export const dataEnteredLightColor = '#93ff93';
-export const dataEnteredDarkColor = '#00aa00';
+export const messageLightColor = '#93ff93';
+export const messageDarkColor = '#00aa00';
 
-export const padCodewordLightColor = '#ff9494';
-export const padCodewordDarkColor = '#ee0000';
+export const terminatorColor = '#fff';
+
+export const paddingCodewordLightColor = '#ff9494';
+export const paddingCodewordDarkColor = '#ee0000';
 
 export const errorCodewordsLightColor = '#f8a4ff';
 export const errorCodewordsDarkColor = '#f147ff';
+
+export const reminderBitsColor = '#fff';
+
+//#endregion

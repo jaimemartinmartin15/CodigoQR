@@ -298,66 +298,6 @@ li .error-capacity-name {
   grid-auto-rows: minmax(25px, auto);
 }
 
-.module-legend {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-right: 10px;
-}
-
-.module-legend::before {
-  display: inline-block;
-  content: '';
-  width: 20px;
-  height: 20px;
-}
-
-.module-legend--data-entered-light::before,
-.module-legend--position-pattern-light::before {
-  background-color: #93ff93;
-}
-
-.module-legend--data-entered-dark::before,
-.module-legend--position-pattern-dark::before {
-  background-color: #00aa00;
-}
-
-.module-legend--number-of-characters-entered-light::before,
-.module-legend--alignment-pattern-light::before {
-  background-color: #f5f584;
-}
-
-.module-legend--number-of-characters-entered-dark::before,
-.module-legend--alignment-pattern-dark::before {
-  background-color: #b4b400;
-}
-
-.module-legend--data-codification-format-light::before,
-.module-legend--timing-pattern-light::before {
-  background-color: #62d3ff;
-}
-
-.module-legend--data-codification-format-dark::before,
-.module-legend--timing-pattern-dark::before {
-  background-color: #5a5aff;
-}
-
-.module-legend--version-information-light::before {
-  background-color: #ff9494;
-}
-
-.module-legend--version-information-dark::before {
-  background-color: #ee0000;
-}
-
-.module-legend--format-information-light::before {
-  background-color: #f8a4ff;
-}
-
-.module-legend--format-information-dark::before {
-  background-color: #f147ff;
-}
-
 .monospace {
   font-family: monospace;
 }

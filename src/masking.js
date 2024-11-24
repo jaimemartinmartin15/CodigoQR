@@ -1,5 +1,5 @@
-import { DEFAULT_COLOR, defaultDarkColor, defaultLightColor } from './colors';
-import { createQrCodeMatrix, paintModules } from './qr-code-utils';
+import { MODULE_TYPE } from './module-type';
+import { createQrCodeMatrix, paintModules } from './qr-code-matrix';
 
 export const EXCLUDE_FROM_MASK_COLOR = 'blue';
 
@@ -14,17 +14,21 @@ export const DATA_MASKS_PATTERNS = {
   111: (i, j) => (((i + j) % 2) + ((i * j) % 3)) % 2 === 0,
 };
 
+function isFunctionalModule(module) {
+  return [MODULE_TYPE.POSITION, MODULE_TYPE.ALIGNMENT, MODULE_TYPE.TIMING, MODULE_TYPE.VERSION, MODULE_TYPE.FORMAT].includes(module.type);
+}
+
 export function applyMask(maskId, qrCodeMatrix) {
   const qrCodeWithMask = createQrCodeMatrix(qrCodeMatrix.length);
 
   for (let i = 0; i < qrCodeWithMask.length; i++) {
     for (let j = 0; j < qrCodeWithMask.length; j++) {
-      if (qrCodeMatrix[i][j] === EXCLUDE_FROM_MASK_COLOR) continue;
+      if (isFunctionalModule(qrCodeMatrix[i][j])) continue;
 
       if (DATA_MASKS_PATTERNS[maskId](i, j)) {
-        // invert the module color
-        const color = qrCodeMatrix[i][j] === defaultDarkColor ? defaultLightColor : defaultDarkColor;
-        paintModules(qrCodeWithMask, [[i, j]], color);
+        const moduleToInvert = qrCodeMatrix[i][j];
+        const invertedModule = moduleToInvert.bit === '0' ? { ...moduleToInvert, bit: '1' } : { ...moduleToInvert, bit: '0' };
+        paintModules(qrCodeWithMask, [[i, j]], invertedModule);
       } else {
         paintModules(qrCodeWithMask, [[i, j]], qrCodeMatrix[i][j]);
       }
@@ -46,16 +50,19 @@ export function evaluateQrCodeAfterMaskApplied(qrCodeMatrix) {
 function evaluateAdjacentModulesSameColor(qrCodeMatrix) {
   const N1 = 3;
   let score = 0;
-
   for (let r = 0; r < qrCodeMatrix.length; r++) {
     for (let c = 0; c < qrCodeMatrix.length; c++) {
-      if (qrCodeMatrix[r][c] === DEFAULT_COLOR) continue;
+      if (isFunctionalModule(qrCodeMatrix[r][c])) continue;
 
       // check rows but if previous module is same color, it was already counted
-      if (qrCodeMatrix[r][c - 1] !== qrCodeMatrix[r][c]) {
+      if (qrCodeMatrix[r][c - 1] === undefined || qrCodeMatrix[r][c - 1].bit !== qrCodeMatrix[r][c].bit) {
         let k = c;
         let modulesInRInARow = 0;
-        while (qrCodeMatrix[r][c] === qrCodeMatrix[r][k]) {
+        while (
+          qrCodeMatrix[r][k] !== undefined &&
+          !isFunctionalModule(qrCodeMatrix[r][k]) &&
+          qrCodeMatrix[r][c].bit === qrCodeMatrix[r][k].bit
+        ) {
           k++;
           modulesInRInARow++;
         }
@@ -63,10 +70,14 @@ function evaluateAdjacentModulesSameColor(qrCodeMatrix) {
       }
 
       // check columns but if previous module is same color, it was already counted
-      if (qrCodeMatrix[r - 1]?.[c] === undefined || qrCodeMatrix[r - 1][c] !== qrCodeMatrix[r][c]) {
+      if (qrCodeMatrix[r - 1]?.[c] === undefined || qrCodeMatrix[r - 1][c].bit !== qrCodeMatrix[r][c].bit) {
         let k = r;
         let modulesInCInARow = 0;
-        while (qrCodeMatrix[r][c] === qrCodeMatrix[k]?.[c]) {
+        while (
+          qrCodeMatrix[k]?.[c] !== undefined &&
+          !isFunctionalModule(qrCodeMatrix[k][c]) &&
+          qrCodeMatrix[r][c].bit === qrCodeMatrix[k][c].bit
+        ) {
           k++;
           modulesInCInARow++;
         }
@@ -84,14 +95,23 @@ function evaluate2x2Blocks(qrCodeMatrix) {
 
   for (let r = 0; r < qrCodeMatrix.length - 1; r++) {
     for (let c = 0; c < qrCodeMatrix.length - 1; c++) {
-      if (qrCodeMatrix[r][c] === DEFAULT_COLOR) continue;
+      if (
+        isFunctionalModule(qrCodeMatrix[r][c]) &&
+        qrCodeMatrix[r][c + 1] !== undefined &&
+        isFunctionalModule(qrCodeMatrix[r][c + 1]) &&
+        qrCodeMatrix[r + 1][c] !== undefined &&
+        isFunctionalModule(qrCodeMatrix[r + 1][c]) &&
+        qrCodeMatrix[r + 1][c + 1] !== undefined &&
+        isFunctionalModule(qrCodeMatrix[r + 1][c + 1])
+      )
+        continue;
 
-      const color00 = qrCodeMatrix[r][c];
-      const color01 = qrCodeMatrix[r][c + 1];
-      const color10 = qrCodeMatrix[r + 1][c];
-      const color11 = qrCodeMatrix[r + 1][c + 1];
+      const bit00 = qrCodeMatrix[r][c].bit;
+      const bit01 = qrCodeMatrix[r][c + 1].bit;
+      const bit10 = qrCodeMatrix[r + 1][c].bit;
+      const bit11 = qrCodeMatrix[r + 1][c + 1].bit;
 
-      if (color00 === color01 && color00 === color10 && color00 === color11) score++;
+      if ([bit00, bit01, bit10, bit11].every((bit, _, arr) => bit === arr[0])) score++;
     }
   }
 
@@ -100,34 +120,26 @@ function evaluate2x2Blocks(qrCodeMatrix) {
 
 function evaluatePresenceOfPattern11311(qrCodeMatrix) {
   const N3 = 40;
-  const PATTERN = [
-    defaultDarkColor,
-    defaultLightColor,
-    defaultDarkColor,
-    defaultDarkColor,
-    defaultDarkColor,
-    defaultLightColor,
-    defaultDarkColor,
-  ];
+  const PATTERN = ['1', '0', '1', '1', '1', '0', '1'];
 
   for (let r = 0; r < qrCodeMatrix.length - 6; r++) {
     for (let c = 0; c < qrCodeMatrix.length - 6; c++) {
-      if (qrCodeMatrix[r][c] === DEFAULT_COLOR) continue;
+      if (isFunctionalModule(qrCodeMatrix[r][c])) continue;
 
       //#region 1:1:3:1:1 pattern in row
-      let isRowPaternMatch = true;
+      let isRowPatternMatch = true;
       for (let i = 0; i < PATTERN.length; i++) {
-        if (qrCodeMatrix[r][c + i] !== PATTERN[i]) {
-          isRowPaternMatch = false;
+        if (isFunctionalModule(qrCodeMatrix[r][c + i]) || qrCodeMatrix[r][c + i].bit !== PATTERN[i]) {
+          isRowPatternMatch = false;
           break;
         }
       }
-      if (isRowPaternMatch) {
+      if (isRowPatternMatch) {
         // check also it is preceded or followed by four white modules
         let isPreceded = true;
         for (let i = 1; i <= 4; i++) {
           if (qrCodeMatrix[r][c - i] === undefined) return N3;
-          if (qrCodeMatrix[r][c - i] !== defaultLightColor) {
+          if (qrCodeMatrix[r][c - i].bit !== '0') {
             isPreceded = false;
             break;
           }
@@ -137,7 +149,7 @@ function evaluatePresenceOfPattern11311(qrCodeMatrix) {
         let isFollowed = true;
         for (let i = 1; i <= 4; i++) {
           if (qrCodeMatrix[r][c + 6 + i] === undefined) return N3;
-          if (qrCodeMatrix[r][c + 6 + i] !== defaultLightColor) {
+          if (qrCodeMatrix[r][c + 6 + i].bit !== '0') {
             isFollowed = false;
             break;
           }
@@ -147,19 +159,19 @@ function evaluatePresenceOfPattern11311(qrCodeMatrix) {
       //#endregion
 
       //#region 1:1:3:1:1 pattern in column
-      let isColumnPaternMatch = true;
+      let isColumnPatternMatch = true;
       for (let i = 0; i < PATTERN.length; i++) {
-        if (qrCodeMatrix[r + i][c] !== PATTERN[i]) {
-          isColumnPaternMatch = false;
+        if (isFunctionalModule(qrCodeMatrix[r + i][c]) || qrCodeMatrix[r + i][c].bit !== PATTERN[i]) {
+          isColumnPatternMatch = false;
           break;
         }
       }
-      if (isColumnPaternMatch) {
+      if (isColumnPatternMatch) {
         // check also it is preceded or followed by four white modules
         let isPreceded = true;
         for (let i = 1; i <= 4; i++) {
           if (qrCodeMatrix[r - i]?.[c] === undefined) return N3;
-          if (qrCodeMatrix[r - i]?.[c] !== defaultLightColor) {
+          if (qrCodeMatrix[r - i]?.[c].bit !== '0') {
             isPreceded = false;
             break;
           }
@@ -169,7 +181,7 @@ function evaluatePresenceOfPattern11311(qrCodeMatrix) {
         let isFollowed = true;
         for (let i = 1; i <= 4; i++) {
           if (qrCodeMatrix[r + 6 + i]?.[c] === undefined) return N3;
-          if (qrCodeMatrix[r + 6 + i]?.[c] !== defaultLightColor) {
+          if (qrCodeMatrix[r + 6 + i]?.[c].bit !== '0') {
             isFollowed = false;
             break;
           }
@@ -190,10 +202,10 @@ function evaluateProportionOfDarkModules(qrCodeMatrix) {
   let darkModules = 0;
   for (let r = 0; r < qrCodeMatrix.length; r++) {
     for (let c = 0; c < qrCodeMatrix.length; c++) {
-      if (qrCodeMatrix[r][c] === DEFAULT_COLOR) continue;
+      if (isFunctionalModule(qrCodeMatrix[r][c])) continue;
 
       totalModules++;
-      if (qrCodeMatrix[r][c] === defaultDarkColor) darkModules++;
+      if (qrCodeMatrix[r][c].bit === '1') darkModules++;
     }
   }
 

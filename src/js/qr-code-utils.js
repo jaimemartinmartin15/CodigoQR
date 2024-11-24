@@ -14,10 +14,6 @@ export function asciiToBinary(message) {
   return messageInBinary;
 }
 
-export function splitInBytes(binaryString) {
-  return binaryString.match(/[01]{1,8}/g) ?? [];
-}
-
 export function getMessageLengthInBinary(qrCodeVersionNumber, messageLength) {
   // version 1 to 9 -> 8 modules, version 10 to 40 -> 16 modules
   const modulesLength = qrCodeVersionNumber <= 9 ? 8 : 16;

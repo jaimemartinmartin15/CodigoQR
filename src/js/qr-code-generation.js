@@ -34,7 +34,7 @@ import {
 import { CSS_CLASSES, CSS_IDS } from './css-selectors';
 import { ELEMENTS } from './elements';
 import { EXPONENTIALS_TABLE } from './galois-field';
-import { applyMask, MASKS_FORMULAS, evaluateQrCodeAfterMaskApplied } from './masking';
+import { applyMask, evaluateQrCodeAfterMaskApplied, MASKS_FORMULAS } from './masking';
 import { MODULE_TYPE } from './module-type';
 import {
   createQrCodeMatrix,
@@ -49,10 +49,8 @@ import {
 import { QR_CODE_STANDARS } from './qr-code-standards';
 import { applyXOR, asciiToBinary, getMessageLengthInBinary, getPaddingCodewords, numberToBinary } from './qr-code-utils';
 import { divideBinaryPolinomials, GENERATOR_POLYNOMIALS } from './reed-salomon';
-import { showHowToDivideDataBitStreamInBlocks } from './split-in-data-blocks-explanation';
-import { paintSvgQrCode } from './svg-qr-code-painter';
+import { paintSvgQrCode, showFormatPatternCompletion, showHowToDivideDataBitStreamInBlocks, showVersionPatternCompletion } from './svg-painters';
 import { createMessageToAsciiTable, hightlightVersionInVersionsTable } from './table-handlers';
-import { showFormatPatternCompletion, showVersionPatternCompletion } from './version-and-format-svg';
 
 export function generateQrCode(message, errorCorrectionLevel) {
   //#region determine qr code to use

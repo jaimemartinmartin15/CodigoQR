@@ -58,6 +58,7 @@ export function hightlightVersionInVersionsTable(version, errorCorrectionLevel) 
 //#endregion versions
 
 //#region message to ascii
+
 export function createMessageToAsciiTable(message) {
   ELEMENTS.ASCII_MESSAGE_TABLE.innerHTML = '';
   for (let i = 0; i < message.length; i++) {
@@ -94,4 +95,5 @@ export function createMessageToAsciiTable(message) {
     ELEMENTS.ASCII_MESSAGE_TABLE.append(svg);
   }
 }
+
 //#endregion

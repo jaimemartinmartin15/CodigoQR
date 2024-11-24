@@ -209,8 +209,11 @@ export function divideBinaryPolinomials(dividendBinary, divisorBinary) {
     }
   }
 
+  // return only the reminder
   return dividendDecimal
     .slice(-(divisorDecimal.length - 1))
     .map((d) => numberToBinary(d))
     .join('');
 }
+
+//#endregion

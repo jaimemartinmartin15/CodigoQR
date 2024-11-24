@@ -1,13 +1,14 @@
 // Note: the errorCorrectionLevel.maxMessageLength is for binary data
+// Note: commented fields are not used and should not be included in PROD. Uncomment them when used
 
 export const QR_CODE_STANDARS = [
   {
     version: 1,
     size: 21,
-    functionPatternModules: 202,
-    formatInformationModules: 31,
-    versionInformationModules: 0,
-    dataModules: 208,
+    // functionPatternModules: 202,
+    // formatInformationModules: 31,
+    // versionInformationModules: 0,
+    // dataModules: 208,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -33,14 +34,13 @@ export const QR_CODE_STANDARS = [
     },
     alignmentPatternPositions: [],
   },
-
   {
     version: 2,
     size: 25,
-    functionPatternModules: 235,
-    formatInformationModules: 31,
-    versionInformationModules: 0,
-    dataModules: 359,
+    // functionPatternModules: 235,
+    // formatInformationModules: 31,
+    // versionInformationModules: 0,
+    // dataModules: 359,
     reminderBits: 7,
     errorCorrectionLevel: {
       L: {
@@ -69,10 +69,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 3,
     size: 29,
-    functionPatternModules: 243,
-    formatInformationModules: 31,
-    versionInformationModules: 0,
-    dataModules: 567,
+    // functionPatternModules: 243,
+    // formatInformationModules: 31,
+    // versionInformationModules: 0,
+    // dataModules: 567,
     reminderBits: 7,
     errorCorrectionLevel: {
       L: {
@@ -101,10 +101,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 4,
     size: 33,
-    functionPatternModules: 251,
-    formatInformationModules: 31,
-    versionInformationModules: 0,
-    dataModules: 807,
+    // functionPatternModules: 251,
+    // formatInformationModules: 31,
+    // versionInformationModules: 0,
+    // dataModules: 807,
     reminderBits: 7,
     errorCorrectionLevel: {
       L: {
@@ -133,10 +133,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 5,
     size: 37,
-    functionPatternModules: 259,
-    formatInformationModules: 31,
-    versionInformationModules: 0,
-    dataModules: 1079,
+    // functionPatternModules: 259,
+    // formatInformationModules: 31,
+    // versionInformationModules: 0,
+    // dataModules: 1079,
     reminderBits: 7,
     errorCorrectionLevel: {
       L: {
@@ -171,10 +171,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 6,
     size: 41,
-    functionPatternModules: 267,
-    formatInformationModules: 31,
-    versionInformationModules: 0,
-    dataModules: 1383,
+    // functionPatternModules: 267,
+    // formatInformationModules: 31,
+    // versionInformationModules: 0,
+    // dataModules: 1383,
     reminderBits: 7,
     errorCorrectionLevel: {
       L: {
@@ -203,10 +203,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 7,
     size: 45,
-    functionPatternModules: 390,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 1568,
+    // functionPatternModules: 390,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 1568,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -241,10 +241,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 8,
     size: 49,
-    functionPatternModules: 398,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 1936,
+    // functionPatternModules: 398,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 1936,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -282,10 +282,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 9,
     size: 53,
-    functionPatternModules: 406,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 2336,
+    // functionPatternModules: 406,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 2336,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -323,10 +323,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 10,
     size: 57,
-    functionPatternModules: 414,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 2768,
+    // functionPatternModules: 414,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 2768,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -367,10 +367,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 11,
     size: 61,
-    functionPatternModules: 422,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 3232,
+    // functionPatternModules: 422,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 3232,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -408,10 +408,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 12,
     size: 65,
-    functionPatternModules: 430,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 3728,
+    // functionPatternModules: 430,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 3728,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -452,10 +452,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 13,
     size: 69,
-    functionPatternModules: 438,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 4256,
+    // functionPatternModules: 438,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 4256,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -493,10 +493,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 14,
     size: 73,
-    functionPatternModules: 611,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 4651,
+    // functionPatternModules: 611,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 4651,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -537,10 +537,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 15,
     size: 77,
-    functionPatternModules: 619,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 5243,
+    // functionPatternModules: 619,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 5243,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -581,10 +581,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 16,
     size: 81,
-    functionPatternModules: 627,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 5867,
+    // functionPatternModules: 627,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 5867,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -625,10 +625,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 17,
     size: 85,
-    functionPatternModules: 635,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 6523,
+    // functionPatternModules: 635,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 6523,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -669,10 +669,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 18,
     size: 89,
-    functionPatternModules: 643,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 7211,
+    // functionPatternModules: 643,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 7211,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -713,10 +713,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 19,
     size: 93,
-    functionPatternModules: 651,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 7931,
+    // functionPatternModules: 651,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 7931,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -757,10 +757,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 20,
     size: 97,
-    functionPatternModules: 659,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 8683,
+    // functionPatternModules: 659,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 8683,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -801,10 +801,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 21,
     size: 101,
-    functionPatternModules: 882,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 9252,
+    // functionPatternModules: 882,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 9252,
     reminderBits: 4,
     errorCorrectionLevel: {
       L: {
@@ -842,10 +842,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 22,
     size: 105,
-    functionPatternModules: 890,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 10068,
+    // functionPatternModules: 890,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 10068,
     reminderBits: 4,
     errorCorrectionLevel: {
       L: {
@@ -880,10 +880,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 23,
     size: 109,
-    functionPatternModules: 898,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 10916,
+    // functionPatternModules: 898,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 10916,
     reminderBits: 4,
     errorCorrectionLevel: {
       L: {
@@ -924,10 +924,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 24,
     size: 113,
-    functionPatternModules: 906,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 11796,
+    // functionPatternModules: 906,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 11796,
     reminderBits: 4,
     errorCorrectionLevel: {
       L: {
@@ -968,10 +968,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 25,
     size: 117,
-    functionPatternModules: 914,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 12708,
+    // functionPatternModules: 914,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 12708,
     reminderBits: 4,
     errorCorrectionLevel: {
       L: {
@@ -1012,10 +1012,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 26,
     size: 121,
-    functionPatternModules: 922,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 13652,
+    // functionPatternModules: 922,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 13652,
     reminderBits: 4,
     errorCorrectionLevel: {
       L: {
@@ -1056,10 +1056,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 27,
     size: 125,
-    functionPatternModules: 930,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 14628,
+    // functionPatternModules: 930,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 14628,
     reminderBits: 4,
     errorCorrectionLevel: {
       L: {
@@ -1100,10 +1100,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 28,
     size: 129,
-    functionPatternModules: 1203,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 15371,
+    // functionPatternModules: 1203,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 15371,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -1144,10 +1144,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 29,
     size: 133,
-    functionPatternModules: 1211,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 16411,
+    // functionPatternModules: 1211,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 16411,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -1188,10 +1188,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 30,
     size: 137,
-    functionPatternModules: 1219,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 17483,
+    // functionPatternModules: 1219,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 17483,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -1232,10 +1232,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 31,
     size: 141,
-    functionPatternModules: 1227,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 18587,
+    // functionPatternModules: 1227,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 18587,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -1276,10 +1276,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 32,
     size: 145,
-    functionPatternModules: 1235,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 19723,
+    // functionPatternModules: 1235,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 19723,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -1317,10 +1317,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 33,
     size: 149,
-    functionPatternModules: 1243,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 20891,
+    // functionPatternModules: 1243,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 20891,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -1361,10 +1361,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 34,
     size: 153,
-    functionPatternModules: 1251,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 22091,
+    // functionPatternModules: 1251,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 22091,
     reminderBits: 3,
     errorCorrectionLevel: {
       L: {
@@ -1405,10 +1405,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 35,
     size: 157,
-    functionPatternModules: 1574,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 23008,
+    // functionPatternModules: 1574,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 23008,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -1449,10 +1449,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 36,
     size: 161,
-    functionPatternModules: 1582,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 24272,
+    // functionPatternModules: 1582,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 24272,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -1493,10 +1493,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 37,
     size: 165,
-    functionPatternModules: 1590,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 25568,
+    // functionPatternModules: 1590,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 25568,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -1534,10 +1534,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 38,
     size: 169,
-    functionPatternModules: 1598,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 26896,
+    // functionPatternModules: 1598,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 26896,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -1578,10 +1578,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 39,
     size: 173,
-    functionPatternModules: 1606,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 28256,
+    // functionPatternModules: 1606,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 28256,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {
@@ -1622,10 +1622,10 @@ export const QR_CODE_STANDARS = [
   {
     version: 40,
     size: 177,
-    functionPatternModules: 1614,
-    formatInformationModules: 31,
-    versionInformationModules: 36,
-    dataModules: 29648,
+    // functionPatternModules: 1614,
+    // formatInformationModules: 31,
+    // versionInformationModules: 36,
+    // dataModules: 29648,
     reminderBits: 0,
     errorCorrectionLevel: {
       L: {

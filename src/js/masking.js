@@ -13,27 +13,40 @@ export const MASKS_FORMULAS = {
 };
 
 function isFunctionalModule(module) {
-  return [MODULE_TYPE.POSITION, MODULE_TYPE.ALIGNMENT, MODULE_TYPE.TIMING, MODULE_TYPE.VERSION, MODULE_TYPE.FORMAT].includes(module.type);
+  // consider modules outside the qr code (margin) as functional
+  if (module === undefined) return true;
+
+  return [
+    MODULE_TYPE.NOT_DEFINED,
+    MODULE_TYPE.POSITION,
+    MODULE_TYPE.SEPARATOR,
+    MODULE_TYPE.ALIGNMENT,
+    MODULE_TYPE.TIMING,
+    MODULE_TYPE.VERSION,
+    MODULE_TYPE.FORMAT,
+  ].includes(module.type);
 }
 
-export function applyMask(maskId, qrCodeMatrix) {
-  const qrCodeWithMask = createQrCodeMatrix(qrCodeMatrix.length);
+export function applyMask(maskId, qrCodeMatrixWithouMask) {
+  const qrCodeMatrixWithMask = createQrCodeMatrix(qrCodeMatrixWithouMask.length);
 
-  for (let i = 0; i < qrCodeWithMask.length; i++) {
-    for (let j = 0; j < qrCodeWithMask.length; j++) {
-      if (isFunctionalModule(qrCodeMatrix[i][j])) continue;
+  for (let i = 0; i < qrCodeMatrixWithMask.length; i++) {
+    for (let j = 0; j < qrCodeMatrixWithMask.length; j++) {
+      const module = qrCodeMatrixWithouMask[i][j];
+
+      if (isFunctionalModule(module)) continue;
 
       if (MASKS_FORMULAS[maskId](i, j)) {
-        const moduleToInvert = qrCodeMatrix[i][j];
-        const invertedModule = moduleToInvert.bit === '0' ? { ...moduleToInvert, bit: '1' } : { ...moduleToInvert, bit: '0' };
-        paintModules(qrCodeWithMask, [[i, j]], invertedModule);
+        // invert the module
+        const invertedModule = module.bit === '0' ? { ...module, bit: '1' } : { ...module, bit: '0' };
+        paintModules(qrCodeMatrixWithMask, [[i, j]], invertedModule);
       } else {
-        paintModules(qrCodeWithMask, [[i, j]], qrCodeMatrix[i][j]);
+        paintModules(qrCodeMatrixWithMask, [[i, j]], module);
       }
     }
   }
 
-  return qrCodeWithMask;
+  return qrCodeMatrixWithMask;
 }
 
 export function evaluateQrCodeAfterMaskApplied(qrCodeMatrix) {
@@ -45,38 +58,34 @@ export function evaluateQrCodeAfterMaskApplied(qrCodeMatrix) {
   );
 }
 
+//#region adjacent modules
+
 function evaluateAdjacentModulesSameColor(qrCodeMatrix) {
-  const N1 = 3;
+  const N1 = 3; // as defined in the standard
   let score = 0;
   for (let r = 0; r < qrCodeMatrix.length; r++) {
     for (let c = 0; c < qrCodeMatrix.length; c++) {
-      if (isFunctionalModule(qrCodeMatrix[r][c])) continue;
+      const module = qrCodeMatrix[r][c];
 
-      // check rows but if previous module is same color, it was already counted
-      if (qrCodeMatrix[r][c - 1] === undefined || qrCodeMatrix[r][c - 1].bit !== qrCodeMatrix[r][c].bit) {
-        let k = c;
+      if (isFunctionalModule(module)) continue;
+
+      // check rows, but if previous module is functional or same color, skip it (already counted)
+      if (!isFunctionalModule(qrCodeMatrix[r][c - 1]) && qrCodeMatrix[r][c - 1].bit !== module.bit) {
+        let c2 = c;
         let modulesInRInARow = 0;
-        while (
-          qrCodeMatrix[r][k] !== undefined &&
-          !isFunctionalModule(qrCodeMatrix[r][k]) &&
-          qrCodeMatrix[r][c].bit === qrCodeMatrix[r][k].bit
-        ) {
-          k++;
+        while (!isFunctionalModule(qrCodeMatrix[r][c2]) && qrCodeMatrix[r][c2].bit === module.bit) {
+          c2++;
           modulesInRInARow++;
         }
         if (modulesInRInARow >= 5) score += N1 + modulesInRInARow - 5;
       }
 
-      // check columns but if previous module is same color, it was already counted
-      if (qrCodeMatrix[r - 1]?.[c] === undefined || qrCodeMatrix[r - 1][c].bit !== qrCodeMatrix[r][c].bit) {
-        let k = r;
+      // check columns, but if previous module is functional or same color, skip it (already counted)
+      if (!isFunctionalModule(qrCodeMatrix[r - 1]?.[c]) && qrCodeMatrix[r - 1][c].bit !== module.bit) {
+        let r2 = r;
         let modulesInCInARow = 0;
-        while (
-          qrCodeMatrix[k]?.[c] !== undefined &&
-          !isFunctionalModule(qrCodeMatrix[k][c]) &&
-          qrCodeMatrix[r][c].bit === qrCodeMatrix[k][c].bit
-        ) {
-          k++;
+        while (!isFunctionalModule(qrCodeMatrix[r2]?.[c]) && qrCodeMatrix[r2][c].bit === module.bit) {
+          r2++;
           modulesInCInARow++;
         }
         if (modulesInCInARow >= 5) score += N1 + modulesInCInARow - 5;
@@ -87,19 +96,20 @@ function evaluateAdjacentModulesSameColor(qrCodeMatrix) {
   return score;
 }
 
+//#endregion
+
+//#region blocks 2x2
+
 function evaluate2x2Blocks(qrCodeMatrix) {
-  const N2 = 3;
+  const N2 = 3; // as defined in the standard
   let score = 0;
 
   for (let r = 0; r < qrCodeMatrix.length - 1; r++) {
     for (let c = 0; c < qrCodeMatrix.length - 1; c++) {
       if (
-        isFunctionalModule(qrCodeMatrix[r][c]) &&
-        qrCodeMatrix[r][c + 1] !== undefined &&
-        isFunctionalModule(qrCodeMatrix[r][c + 1]) &&
-        qrCodeMatrix[r + 1][c] !== undefined &&
-        isFunctionalModule(qrCodeMatrix[r + 1][c]) &&
-        qrCodeMatrix[r + 1][c + 1] !== undefined &&
+        isFunctionalModule(qrCodeMatrix[r][c]) ||
+        isFunctionalModule(qrCodeMatrix[r][c + 1]) ||
+        isFunctionalModule(qrCodeMatrix[r + 1][c]) ||
         isFunctionalModule(qrCodeMatrix[r + 1][c + 1])
       )
         continue;
@@ -116,8 +126,12 @@ function evaluate2x2Blocks(qrCodeMatrix) {
   return N2 * score;
 }
 
+//#endregion
+
+//#region pattern 1:1:3:1:1
+
 function evaluatePresenceOfPattern11311(qrCodeMatrix) {
-  const N3 = 40;
+  const N3 = 40; // as defined in the standard
   const PATTERN = ['1', '0', '1', '1', '1', '0', '1'];
 
   for (let r = 0; r < qrCodeMatrix.length - 6; r++) {
@@ -193,17 +207,23 @@ function evaluatePresenceOfPattern11311(qrCodeMatrix) {
   return 0;
 }
 
+//#endregion
+
+//#region dark proportion
+
 function evaluateProportionOfDarkModules(qrCodeMatrix) {
-  const N4 = 10;
+  const N4 = 10; // as defined in the standard
 
   let totalModules = 0;
   let darkModules = 0;
   for (let r = 0; r < qrCodeMatrix.length; r++) {
     for (let c = 0; c < qrCodeMatrix.length; c++) {
-      if (isFunctionalModule(qrCodeMatrix[r][c])) continue;
+      const module = qrCodeMatrix[r][c];
+
+      if (isFunctionalModule(module)) continue;
 
       totalModules++;
-      if (qrCodeMatrix[r][c].bit === '1') darkModules++;
+      if (module.bit === '1') darkModules++;
     }
   }
 
@@ -213,3 +233,5 @@ function evaluateProportionOfDarkModules(qrCodeMatrix) {
 
   return N4 * deviation;
 }
+
+//#endregion

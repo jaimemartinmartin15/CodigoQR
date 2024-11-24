@@ -335,7 +335,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
       darkColor: defaultDarkColor,
     }
   );
-  paintSvgQrCode(CSS_IDS.SVG_FINAL_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 4 });
+  setTimeout(() => paintSvgQrCode(CSS_IDS.SVG_FINAL_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 4 }));
   //#endregion
 
   //#region paint empty qr code
@@ -343,7 +343,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
   /*                                                         PAINT EMPTY QR CODE                                                          */
   /****************************************************************************************************************************************/
   const emptyQrCodeMatrix = createQrCodeMatrix(QR_CODE_STANDARD_TO_USE.size);
-  paintSvgQrCode(CSS_IDS.SVG_EMPTY_QR_CODE, emptyQrCodeMatrix);
+  setTimeout(() => paintSvgQrCode(CSS_IDS.SVG_EMPTY_QR_CODE, emptyQrCodeMatrix));
   //#endregion
 
   //#region decide size of qr code step explanation
@@ -386,7 +386,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
     darkColor: defaultDarkColor,
     lightColor: defaultDarkColor,
   });
-  paintSvgQrCode(CSS_IDS.SVG_SECTIONS_QR_CODE, sectionsQrCodeMatrix, { withGrid: true, margin: 3 });
+  setTimeout(() => paintSvgQrCode(CSS_IDS.SVG_SECTIONS_QR_CODE, sectionsQrCodeMatrix, { withGrid: true, margin: 3 }));
 
   // alignment patterns
   if (QR_CODE_STANDARD_TO_USE.alignmentPatternPositions.length === 0) {
@@ -468,7 +468,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
     ...REMINDER_BITS_STREAM,
   ]);
 
-  paintSvgQrCode(CSS_IDS.SVG_DATA_REGION_EXPLAINED_QR_CODE, qrCodeWithOnlyData, { labels: true });
+  setTimeout(() => paintSvgQrCode(CSS_IDS.SVG_DATA_REGION_EXPLAINED_QR_CODE, qrCodeWithOnlyData, { labels: true }));
   //#endregion
 
   //#region masks section
@@ -506,7 +506,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
     }
 
     const maskPatternMatrix = applyMask(maskId, qrCodeMatrix);
-    paintSvgQrCode(`${CSS_IDS.SVG_MASK_QR_CODE(maskId)}`, maskPatternMatrix, { withGrid: false });
+    setTimeout(() => paintSvgQrCode(`${CSS_IDS.SVG_MASK_QR_CODE(maskId)}`, maskPatternMatrix, { withGrid: false }));
   });
   //#endregion
 }

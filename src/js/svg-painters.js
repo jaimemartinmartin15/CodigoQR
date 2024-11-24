@@ -8,6 +8,47 @@ import {
 import { ELEMENTS } from './elements';
 import { MODULE_TYPE } from './module-type';
 
+//#region paint module
+
+function paintModule(svg, x, y, module, options = {}) {
+  // background
+  const svgBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  svgBackground.setAttribute('x', x);
+  svgBackground.setAttribute('y', y);
+  svgBackground.setAttribute('width', '1');
+  svgBackground.setAttribute('height', '1');
+  svgBackground.setAttribute('stroke-width', '0');
+  svgBackground.setAttribute('fill', module.bit === '0' ? module.lightColor : module.darkColor);
+  svg.append(svgBackground);
+
+  // value
+  if (options.labels && module.letter) {
+    const svgValue = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    svgValue.setAttribute('x', x + 0.5);
+    svgValue.setAttribute('y', y + 0.7);
+    svgValue.setAttribute('text-anchor', 'middle');
+    svgValue.setAttribute('fill', module.bit === '0' ? module.darkColor : module.lightColor);
+    svgValue.textContent = module.letter;
+    const fontSize = module.letter.length > 3 ? '0.020rem' : '0.035rem';
+    svgValue.style.fontSize = fontSize;
+    svg.append(svgValue);
+  }
+
+  if (options.order !== undefined) {
+    // order
+    const svgOrder = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    svgOrder.setAttribute('x', x + 0.95);
+    svgOrder.setAttribute('y', y + 0.9);
+    svgOrder.setAttribute('text-anchor', 'end');
+    svgOrder.setAttribute('fill', '#000');
+    svgOrder.textContent = `(${options.order + 1})`;
+    svgOrder.setAttribute('font-size', '0.012rem');
+    svg.append(svgOrder);
+  }
+}
+
+//#endregion
+
 //#region  paint qr code matrix
 
 export function paintSvgQrCode(svgSelector, qrCodeMatrix, options) {
@@ -28,25 +69,7 @@ export function paintSvgQrCode(svgSelector, qrCodeMatrix, options) {
     for (let column = 0; column < qrCodeMatrix.length; column++) {
       const module = qrCodeMatrix[row][column];
       if (module.type !== MODULE_TYPE.NOT_DEFINED) {
-        const svgModule = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        svgModule.setAttribute('x', column);
-        svgModule.setAttribute('y', row);
-        svgModule.setAttribute('width', 1);
-        svgModule.setAttribute('height', 1);
-        svgModule.setAttribute('fill', module.bit === '0' ? module.lightColor : module.darkColor);
-        svgModule.setAttribute('stroke-width', '0');
-        svg.append(svgModule);
-
-        if (mergedOptions.labels && module.letter) {
-          const svgLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          svgLabel.setAttribute('x', column + 0.5);
-          svgLabel.setAttribute('y', row + 0.8);
-          svgLabel.setAttribute('text-anchor', 'middle');
-          svgLabel.setAttribute('fill', module.bit === '0' ? module.darkColor : module.lightColor);
-          svgLabel.textContent = module.letter;
-          svgLabel.style.fontSize = '0.04rem';
-          svg.append(svgLabel);
-        }
+        paintModule(svg, column, row, module, mergedOptions);
       }
     }
   }
@@ -78,42 +101,6 @@ export function paintSvgQrCode(svgSelector, qrCodeMatrix, options) {
 
 //#endregion
 
-//#region common
-
-// TODO check if this can be reused!
-function paintModule(svg, bit, x, y, index, lightColor, darkColor) {
-  // background
-  const module = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  module.setAttribute('x', x);
-  module.setAttribute('y', y);
-  module.setAttribute('width', '1');
-  module.setAttribute('height', '1');
-  module.setAttribute('stroke-width', '0');
-  module.setAttribute('fill', bit === '0' ? lightColor : darkColor);
-  svg.append(module);
-
-  // bit value
-  const value = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  value.setAttribute('x', x + 0.3);
-  value.setAttribute('y', y + 0.7);
-  value.setAttribute('fill', bit === '0' ? darkColor : lightColor);
-  value.textContent = bit;
-  value.setAttribute('font-size', '0.6');
-  svg.append(value);
-
-  // position
-  const order = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  order.setAttribute('x', x + 0.95);
-  order.setAttribute('y', y + 0.9);
-  order.setAttribute('fill', '#000');
-  order.textContent = `(${index + 1})`;
-  order.setAttribute('font-size', '0.2');
-  order.setAttribute('text-anchor', 'end');
-  svg.append(order);
-}
-
-//#endregion
-
 //#region version
 
 export function showVersionPatternCompletion(bits) {
@@ -121,22 +108,18 @@ export function showVersionPatternCompletion(bits) {
     // bottom left
     paintModule(
       ELEMENTS.VERSION_PATTERN_COMPLETION_1,
-      b,
       5 - Math.floor(i / 3),
       2 - (i % 3),
-      i,
-      versionPatternLightColor,
-      versionPatternDarkColor
+      { letter: b, bit: b, lightColor: versionPatternLightColor, darkColor: versionPatternDarkColor },
+      { labels: true, order: i }
     );
     // top right
     paintModule(
       ELEMENTS.VERSION_PATTERN_COMPLETION_2,
-      b,
       2 - (i % 3),
       5 - Math.floor(i / 3),
-      i,
-      versionPatternLightColor,
-      versionPatternDarkColor
+      { letter: b, bit: b, lightColor: versionPatternLightColor, darkColor: versionPatternDarkColor },
+      { labels: true, order: i }
     );
   });
 }
@@ -149,23 +132,47 @@ export function showFormatPatternCompletion(bits) {
   // top left
   Array.from(bits.substring(0, 8)).forEach((b, i) => {
     const x = i >= 6 ? i + 1 : i;
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_1, b, x, 8, i, formatPatternLightColor, formatPatternDarkColor);
+    paintModule(
+      ELEMENTS.FORMAT_PATTERN_COMPLETION_1,
+      x,
+      8,
+      { letter: b, bit: b, lightColor: formatPatternLightColor, darkColor: formatPatternDarkColor },
+      { labels: true, order: i }
+    );
   });
   Array.from(bits.substring(8)).forEach((b, i) => {
     const y = 7 - (i >= 1 ? i + 1 : i);
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_1, b, 8, y, i + 8, formatPatternLightColor, formatPatternDarkColor);
+    paintModule(
+      ELEMENTS.FORMAT_PATTERN_COMPLETION_1,
+      8,
+      y,
+      { letter: b, bit: b, lightColor: formatPatternLightColor, darkColor: formatPatternDarkColor },
+      { labels: true, order: i + 8 }
+    );
   });
 
   // bottom left
   Array.from(bits.substring(0, 7)).map((b, i) => {
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_2, b, 0, 8 - i, i, formatPatternLightColor, formatPatternDarkColor);
+    paintModule(
+      ELEMENTS.FORMAT_PATTERN_COMPLETION_2,
+      0,
+      8 - i,
+      { letter: b, bit: b, lightColor: formatPatternLightColor, darkColor: formatPatternDarkColor },
+      { labels: true, order: i }
+    );
   });
   // on the bottom left, this module is always dark
-  paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_2, 0, 0, 1, 0, defaultDarkColor, defaultDarkColor);
+  paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_2, 0, 1, { bit: 1, darkColor: defaultDarkColor });
 
   // top right
   Array.from(bits.substring(7)).map((b, i) => {
-    paintModule(ELEMENTS.FORMAT_PATTERN_COMPLETION_3, b, i, 0, i + 7, formatPatternLightColor, formatPatternDarkColor);
+    paintModule(
+      ELEMENTS.FORMAT_PATTERN_COMPLETION_3,
+      i,
+      0,
+      { letter: b, bit: b, lightColor: formatPatternLightColor, darkColor: formatPatternDarkColor },
+      { labels: true, order: i + 7 }
+    );
   });
 }
 
@@ -183,24 +190,7 @@ export function showHowToDivideDataBitStreamInBlocks(dataBlocks) {
     svgBlock.classList.add('data-block');
 
     for (let moduleI = 0; moduleI < block.length; moduleI++) {
-      const svgModule = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      svgModule.setAttribute('x', moduleI);
-      svgModule.setAttribute('y', 0);
-      svgModule.setAttribute('width', 1);
-      svgModule.setAttribute('height', 1);
-      svgModule.setAttribute('fill', block[moduleI].bit === '0' ? block[moduleI].lightColor : block[moduleI].darkColor);
-      svgBlock.append(svgModule);
-
-      if (block[moduleI].letter !== '') {
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', moduleI + 0.5);
-        text.setAttribute('y', 0.75);
-        text.setAttribute('fill', block[moduleI].bit === '0' ? block[moduleI].darkColor : block[moduleI].lightColor);
-        text.textContent = block[moduleI].letter;
-        const fontSize = block[moduleI].letter.length > 3 ? '0.020rem' : '0.035rem';
-        text.style.fontSize = fontSize;
-        svgBlock.append(text);
-      }
+      paintModule(svgBlock, moduleI, 0, block[moduleI], { labels: true });
     }
 
     ELEMENTS.HOW_TO_SPLIT_IN_BLOCKS.append(svgBlock);

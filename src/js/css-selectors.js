@@ -27,6 +27,8 @@ export const CSS_IDS = {
   SVG_MASK_QR_CODE: (maskId) => `#mask-${maskId}`,
 
   VERSIONS_TABLE: '#versions-table',
+  ERROR_CORRECTION_LEVEL_CODIFICATION_TABLE: '#error-correction-level-codification-table',
+  MASK_CODIFICATION_TABLE: '#mask-codification-table',
 
   ALIGNMENT_PATTERNS_DESCRIPTION: '#alignment-patterns-description',
 

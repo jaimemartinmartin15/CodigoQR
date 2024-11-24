@@ -242,6 +242,15 @@ li .error-capacity-name {
   background-color: #e7fce8;
 }
 
+#mask-codification-table th.selected,
+#mask-codification-table td.selected,
+#error-correction-level-codification-table th.selected,
+#error-correction-level-codification-table td.selected {
+  background-color: #e7fce8;
+  font-weight: bold;
+  color: #0cb30c;
+}
+
 .format-correction-bits,
 .version-correction-bits {
   color: #bc00bc;
@@ -253,7 +262,7 @@ li .error-capacity-name {
 }
 
 #mask-codification-table,
-#error-capacity-codification-table {
+#error-correction-level-codification-table {
   border-spacing: 0;
   text-align: center;
   border: 1px solid black;
@@ -265,8 +274,8 @@ li .error-capacity-name {
   width: 100%;
 }
 
-#error-capacity-codification-table th,
-#error-capacity-codification-table td {
+#error-correction-level-codification-table th,
+#error-correction-level-codification-table td {
   border: 1px solid black;
   padding: 10px;
   width: 25%;

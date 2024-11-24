@@ -49,8 +49,18 @@ import {
 import { QR_CODE_STANDARS } from './qr-code-standards';
 import { applyXOR, asciiToBinary, getMessageLengthInBinary, getPaddingCodewords, numberToBinary } from './qr-code-utils';
 import { divideBinaryPolinomials, GENERATOR_POLYNOMIALS } from './reed-salomon';
-import { paintSvgQrCode, showFormatPatternCompletion, showHowToDivideDataBitStreamInBlocks, showVersionPatternCompletion } from './svg-painters';
-import { createMessageToAsciiTable, hightlightVersionInVersionsTable } from './table-handlers';
+import {
+  paintSvgQrCode,
+  showFormatPatternCompletion,
+  showHowToDivideDataBitStreamInBlocks,
+  showVersionPatternCompletion,
+} from './svg-painters';
+import {
+  createMessageToAsciiTable,
+  hightlightErrorCorrectionLevelInTable,
+  hightlightVersionInVersionsTable,
+  hightlightWinnerMaskInTable,
+} from './table-handlers';
 
 export function generateQrCode(message, errorCorrectionLevel) {
   //#region determine qr code to use
@@ -408,6 +418,8 @@ export function generateQrCode(message, errorCorrectionLevel) {
   showVersionPatternCompletion(VERSION_PATTERN_ALL_BITS);
 
   // format pattern
+  hightlightErrorCorrectionLevelInTable(errorCorrectionLevel);
+  hightlightWinnerMaskInTable(MASK_APPLIED);
   Array.from(document.querySelectorAll(CSS_CLASSES.ERROR_CORRECTION_LEVEL_BINARY)).forEach(
     (e) => (e.innerHTML = ERROR_CORRECTION_LEVEL_IN_BINARY)
   );

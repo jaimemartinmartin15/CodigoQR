@@ -57,6 +57,42 @@ export function hightlightVersionInVersionsTable(version, errorCorrectionLevel) 
 
 //#endregion versions
 
+//#region error correction level
+
+export function hightlightErrorCorrectionLevelInTable(errorCorrectionLevel) {
+  const tableIndexes = ['L', 'M', 'Q', 'H'];
+  const headers = ELEMENTS.ERROR_CORRECTION_LEVEL_CODIFICATION_TABLE.querySelectorAll('thead th');
+  const values = ELEMENTS.ERROR_CORRECTION_LEVEL_CODIFICATION_TABLE.querySelectorAll('tbody td');
+
+  // unselect previous
+  Array.from(headers).forEach((h) => h.classList.remove('selected'));
+  Array.from(values).forEach((v) => v.classList.remove('selected'));
+
+  // select new one
+  Array.from(headers)[tableIndexes.indexOf(errorCorrectionLevel)].classList.add('selected');
+  Array.from(values)[tableIndexes.indexOf(errorCorrectionLevel)].classList.add('selected');
+}
+
+//#endregion
+
+//#region mask
+
+export function hightlightWinnerMaskInTable(maskId) {
+  const tableIndexes = ['000', '001', '010', '011', '100', '101', '110', '111'];
+  const headers = ELEMENTS.MASK_CODIFICATION_TABLE.querySelectorAll('thead th');
+  const values = ELEMENTS.MASK_CODIFICATION_TABLE.querySelectorAll('tbody td');
+
+  // unselect previous
+  Array.from(headers).forEach((h) => h.classList.remove('selected'));
+  Array.from(values).forEach((v) => v.classList.remove('selected'));
+
+  // select new one
+  Array.from(headers)[tableIndexes.indexOf(maskId)].classList.add('selected');
+  Array.from(values)[tableIndexes.indexOf(maskId)].classList.add('selected');
+}
+
+//#endregion
+
 //#region message to ascii
 
 export function createMessageToAsciiTable(message) {

@@ -32,8 +32,9 @@ import {
   versionPatternLightColor,
 } from './colors';
 import { CSS_CLASSES, CSS_IDS } from './css-selectors';
+import { ELEMENTS } from './elements';
 import { EXPONENTIALS_TABLE } from './galois-field';
-import { applyMask, DATA_MASKS_PATTERNS, evaluateQrCodeAfterMaskApplied } from './masking';
+import { applyMask, MASKS_FORMULAS, evaluateQrCodeAfterMaskApplied } from './masking';
 import { MODULE_TYPE } from './module-type';
 import {
   createQrCodeMatrix,
@@ -50,7 +51,7 @@ import { applyXOR, asciiToBinary, getMessageLengthInBinary, getPaddingCodewords,
 import { divideBinaryPolinomials, GENERATOR_POLYNOMIALS } from './reed-salomon';
 import { showHowToDivideDataBitStreamInBlocks } from './split-in-data-blocks-explanation';
 import { paintSvgQrCode } from './svg-qr-code-painter';
-import { createMessageToAsciiTable, hightlightVersionInAlignmentPatternsTable, hightlightVersionInVersionsTable } from './table-handlers';
+import { createMessageToAsciiTable, hightlightVersionInVersionsTable } from './table-handlers';
 import { showFormatPatternCompletion, showVersionPatternCompletion } from './version-and-format-svg';
 
 export function generateQrCode(message, errorCorrectionLevel) {
@@ -93,7 +94,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
   const ERROR_CORRECTION_LEVELS_CODIFICATION = { L: '01', M: '00', Q: '11', H: '10' };
   const ERROR_CORRECTION_LEVEL_IN_BINARY = ERROR_CORRECTION_LEVELS_CODIFICATION[errorCorrectionLevel];
   console.debug(`ERROR_CORRECTION_LEVEL_IN_BINARY (${errorCorrectionLevel}): ${ERROR_CORRECTION_LEVEL_IN_BINARY}`);
-  const FORMATS_IN_BINARY = Object.keys(DATA_MASKS_PATTERNS).map((maskInBinary) => `${ERROR_CORRECTION_LEVEL_IN_BINARY}${maskInBinary}`);
+  const FORMATS_IN_BINARY = Object.keys(MASKS_FORMULAS).map((maskInBinary) => `${ERROR_CORRECTION_LEVEL_IN_BINARY}${maskInBinary}`);
   console.debug(`FORMATS_IN_BINARY:`, FORMATS_IN_BINARY);
   const FORTMAT_PATTERN_MASK = '101010000010010';
   console.debug('FORTMAT_PATTERN_MASK:', FORTMAT_PATTERN_MASK);
@@ -282,7 +283,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
   /*                                                      APPLY AND EVALUATE MASKING                                                      */
   /****************************************************************************************************************************************/
   console.debug('%capply and evaluate masking', 'background: #f99');
-  const QR_CODES_WITH_MASK_APPLIED = Object.keys(DATA_MASKS_PATTERNS).reduce(
+  const QR_CODES_WITH_MASK_APPLIED = Object.keys(MASKS_FORMULAS).reduce(
     (prev, maskId) => ({ ...prev, [maskId]: applyMask(maskId, qrCodeMatrixWithoutMasking) }),
     {}
   );
@@ -326,7 +327,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
       darkColor: defaultDarkColor,
     }
   );
-  paintSvgQrCode(CSS_IDS.GENERATED_FINAL_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 4 });
+  paintSvgQrCode(CSS_IDS.SVG_FINAL_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 4 });
   //#endregion
 
   //#region paint empty qr code
@@ -334,7 +335,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
   /*                                                         PAINT EMPTY QR CODE                                                          */
   /****************************************************************************************************************************************/
   const emptyQrCodeMatrix = createQrCodeMatrix(QR_CODE_STANDARD_TO_USE.size);
-  paintSvgQrCode(CSS_IDS.EMPTY_QR_CODE, emptyQrCodeMatrix);
+  paintSvgQrCode(CSS_IDS.SVG_EMPTY_QR_CODE, emptyQrCodeMatrix);
   //#endregion
 
   //#region decide size of qr code step explanation
@@ -344,7 +345,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
   // number of characters to codify in the qr code
   document.querySelectorAll(CSS_CLASSES.NUMBER_OF_CHARACTERS_IN_THE_INPUT).forEach((e) => (e.textContent = message.length));
   // selected error capacity
-  document.querySelectorAll(CSS_CLASSES.SELECTED_ERROR_CAPACITY_LEVEL).forEach((e) => (e.textContent = errorCorrectionLevel));
+  document.querySelectorAll(CSS_CLASSES.SELECTED_ERROR_CORRECTION_LEVEL).forEach((e) => (e.textContent = errorCorrectionLevel));
   // highlight the row in the table
   hightlightVersionInVersionsTable(QR_CODE_STANDARD_TO_USE.version, errorCorrectionLevel);
   //#endregion
@@ -377,10 +378,22 @@ export function generateQrCode(message, errorCorrectionLevel) {
     darkColor: defaultDarkColor,
     lightColor: defaultDarkColor,
   });
-  paintSvgQrCode(CSS_IDS.QR_CODE_SECTIONS, sectionsQrCodeMatrix, { withGrid: true, margin: 3 });
+  paintSvgQrCode(CSS_IDS.SVG_SECTIONS_QR_CODE, sectionsQrCodeMatrix, { withGrid: true, margin: 3 });
 
   // alignment patterns
-  hightlightVersionInAlignmentPatternsTable(QR_CODE_STANDARD_TO_USE.version);
+  if (QR_CODE_STANDARD_TO_USE.alignmentPatternPositions.length === 0) {
+    ELEMENTS.ALIGNMENT_PATTERNS_DESCRIPTION.innerHTML = 'no se necesitan';
+  } else if (QR_CODE_STANDARD_TO_USE.alignmentPatternPositions.length === 1) {
+    ELEMENTS.ALIGNMENT_PATTERNS_DESCRIPTION.innerHTML = `se necesita <strong>1 patrón</strong> en la fila y columna <strong>${
+      QR_CODE_STANDARD_TO_USE.alignmentPatternPositions[0] + 3
+    }</strong>`;
+  } else {
+    ELEMENTS.ALIGNMENT_PATTERNS_DESCRIPTION.innerHTML = `se necesitan <strong>${
+      Math.pow(QR_CODE_STANDARD_TO_USE.alignmentPatternPositions.length, 2) - 3
+    } patrones</strong> en las filas y columnas <strong>${new Intl.ListFormat('es', { style: 'long', type: 'conjunction' }).format(
+      QR_CODE_STANDARD_TO_USE.alignmentPatternPositions.map((p) => `${p + 3}`)
+    )}</strong>`;
+  }
 
   // version pattern
   Array.from(document.querySelectorAll(CSS_CLASSES.QR_CODE_VERSION)).forEach((e) => (e.textContent = QR_CODE_STANDARD_TO_USE.version));
@@ -397,14 +410,14 @@ export function generateQrCode(message, errorCorrectionLevel) {
   showVersionPatternCompletion(VERSION_PATTERN_ALL_BITS);
 
   // format pattern
-  Array.from(document.querySelectorAll(CSS_CLASSES.ERROR_CAPACITY_CODIFICATION_BITS)).forEach(
+  Array.from(document.querySelectorAll(CSS_CLASSES.ERROR_CORRECTION_LEVEL_BINARY)).forEach(
     (e) => (e.innerHTML = ERROR_CORRECTION_LEVEL_IN_BINARY)
   );
   Array.from(document.querySelectorAll(CSS_CLASSES.MASK_CODIFICATION_BITS)).forEach((e) => (e.innerHTML = MASK_APPLIED));
-  Array.from(document.querySelectorAll(CSS_CLASSES.FORMAT_INFORMATION_DATA_BITS)).forEach(
+  Array.from(document.querySelectorAll(CSS_CLASSES.FORMAT_BITS)).forEach(
     (e) => (e.innerHTML = `${ERROR_CORRECTION_LEVEL_IN_BINARY}${MASK_APPLIED}`)
   );
-  Array.from(document.querySelectorAll(CSS_CLASSES.FORMAT_INFORMATION_CORRECTION_BITS)).forEach(
+  Array.from(document.querySelectorAll(CSS_CLASSES.FORMAT_CORRECTION_BITS)).forEach(
     (e) => (e.innerHTML = ERROR_CORRECTION_BITS_FOR_FORMAT_PATTERN[`${ERROR_CORRECTION_LEVEL_IN_BINARY}${MASK_APPLIED}`])
   );
   showSvgHowBchErrorCorrectionBitsAreCalculated(
@@ -412,7 +425,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
     `${ERROR_CORRECTION_LEVEL_IN_BINARY}${MASK_APPLIED}`,
     FORMAT_GENERATOR
   );
-  document.querySelector(CSS_IDS.INFORMATION_FORMAT_15_BITS_AFTER_XOR).textContent =
+  document.querySelector(CSS_IDS.FORMAT_15_BITS_AFTER_XOR).textContent =
     FORMAT_PATTERNS_AFTER_XOR_ALL_BITS[`${ERROR_CORRECTION_LEVEL_IN_BINARY}${MASK_APPLIED}`];
   showFormatPatternCompletion(FORMAT_PATTERNS_AFTER_XOR_ALL_BITS[`${ERROR_CORRECTION_LEVEL_IN_BINARY}${MASK_APPLIED}`]);
   //#endregion
@@ -445,14 +458,14 @@ export function generateQrCode(message, errorCorrectionLevel) {
     ...REMINDER_BITS_STREAM,
   ]);
 
-  paintSvgQrCode(CSS_IDS.QR_CODE_DATA_REGION_EXPLAINED, qrCodeWithOnlyData, { labels: true });
+  paintSvgQrCode(CSS_IDS.SVG_DATA_REGION_EXPLAINED_QR_CODE, qrCodeWithOnlyData, { labels: true });
   //#endregion
 
   //#region masks section
   /****************************************************************************************************************************************/
   /*                                                         MASKS SECTION                                                                */
   /****************************************************************************************************************************************/
-  Object.keys(DATA_MASKS_PATTERNS).forEach((maskId) => {
+  Object.keys(MASKS_FORMULAS).forEach((maskId) => {
     const qrCodeMatrix = createQrCodeMatrix(QR_CODE_STANDARD_TO_USE.size);
 
     paintModulesForAllPositionPatterns(qrCodeMatrix, { lightColor: defaultLightColor, darkColor: defaultLightColor });
@@ -483,7 +496,7 @@ export function generateQrCode(message, errorCorrectionLevel) {
     }
 
     const maskPatternMatrix = applyMask(maskId, qrCodeMatrix);
-    paintSvgQrCode(`#mask-${maskId}`, maskPatternMatrix, { withGrid: false });
+    paintSvgQrCode(`${CSS_IDS.SVG_MASK_QR_CODE(maskId)}`, maskPatternMatrix, { withGrid: false });
   });
   //#endregion
 }

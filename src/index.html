@@ -53,28 +53,28 @@
             Datos del código QR:
           </p>
 
-          <textarea placeholder="https://www.jaimeelingeniero.es/codigo-qr"></textarea>
+          <textarea name="message" placeholder="https://www.jaimeelingeniero.es/codigo-qr"></textarea>
 
           <p class="label">Capacidad de corrección de errores:</p>
 
           <div>
             <label>
-              <input type="radio" name="ECC" value="L">
+              <input type="radio" name="error-correction-level" value="L">
               <span class="letter">L</span>
               <span class="meaning">(baja)</span>
             </label>
             <label>
-              <input checked type="radio" name="ECC" value="M">
+              <input checked type="radio" name="error-correction-level" value="M">
               <span class="letter">M</span>
               <span class="meaning">(media)</span>
             </label>
             <label>
-              <input type="radio" name="ECC" value="Q">
+              <input type="radio" name="error-correction-level" value="Q">
               <span class="letter">Q</span>
               <span class="meaning">(cuartil)</span>
             </label>
             <label>
-              <input type="radio" name="ECC" value="H">
+              <input type="radio" name="error-correction-level" value="H">
               <span class="letter">H</span>
               <span class="meaning">(alta)</span>
             </label>
@@ -84,7 +84,7 @@
         <button id="generate-qr-code-button">Generar código QR</button>
       </div>
 
-      <svg id="generated-final-qr-code"></svg>
+      <svg id="svg-final-qr-code"></svg>
     </div>
   </section>
 
@@ -95,7 +95,7 @@
       Empecemos con un código QR vacío:
     </p>
 
-    <svg id="empty-qr-code"></svg>
+    <svg id="svg-empty-qr-code"></svg>
 
     <p>
       Pero un momento. ¿Por qué de este tamaño?
@@ -147,8 +147,8 @@
       A mayor cantidad de datos y mayor capacidad de corrección de errores, más grande debe ser el código QR. En el caso
       que estamos estudiando se han introducido <strong><span class="number-of-characters-in-the-input">19</span>
         caracteres</strong> (bytes) y usado la capacidad de <strong>corrección de errores <span
-          class="selected-error-capacity-level">M</span></strong>. En la siguiente tabla debemos buscar la menor versión
-      que nos permite almacenar esa cantidad de datos para el nivel de errores escogido.
+          class="selected-error-correction-level">M</span></strong>. En la siguiente tabla debemos buscar la menor
+      versión que nos permite almacenar esa cantidad de datos para el nivel de errores escogido.
     </p>
 
     <table id="versions-table">
@@ -172,7 +172,7 @@
         en nuestro caso de estudio:
       </p>
 
-      <svg id="qr-code-sections"></svg>
+      <svg id="svg-sections-qr-code"></svg>
 
       <p>
         El resto de módulos sin colorear están reservados para los datos y corrección de errores.
@@ -218,22 +218,11 @@
         <div class="module-legend module-legend--alignment-pattern-light"> blanco</div>
 
         <p>
-          Son patrones de 5x5 módulos. El número y posición de estos patrones depende de la
-          versión. A medida que el tamaño del código QR aumenta, se añaden más en ubicaciones específicas para
-          proporcionar estabilidad adicional.
+          Son patrones de 5x5 módulos. El número y posición de estos patrones depende de la versión. A medida que el
+          tamaño del código QR aumenta, se añaden más en ubicaciones específicas para proporcionar estabilidad
+          adicional. Para la <strong>versión <span class="qr-code-version"></span></strong> de nuestro código QR
+          <span id="alignment-patterns-description">se necesita 1 patrón en la fila y columna 23</span>.
         </p>
-
-        <table id="alignment-pattern-table">
-          <thead>
-            <tr>
-              <th>Versión</th>
-              <th>Número de patrones</th>
-              <th>Posición del módulo central (filas y columnas)</th>
-            </tr>
-          </thead>
-
-          <tbody></tbody>
-        </table>
 
         <p>
           La función de estos módulos es proporcionar una referencia adicional a los escáneres para corregir pequeñas
@@ -401,7 +390,7 @@
         <p>
           En nuestro caso los bits de datos quedarían
           <span class="monospace">
-            <span class="error-capacity-codification-bits"></span><span class="mask-codification-bits"></span>.
+            <span class="error-correction-level-binary"></span><span class="mask-codification-bits"></span>.
           </span>
           Ahora tenemos que calcular los 10 bits de corrección de errores:
         </p>
@@ -411,7 +400,7 @@
           <li>
             Concatenamos diez ceros a los bits de datos:
             <span class="monospace">
-              <span class="format-information-data-bits"></span><span class="appended-bits">0000000000</span>
+              <span class="format-bits"></span><span class="appended-bits">0000000000</span>
             </span>
           </li>
           <li>Calculamos el resto de dividirlo por <span class="monospace format-generator">10100110111</span></li>
@@ -432,18 +421,16 @@
         <p>
           Tenemos que los 15 bits nos quedan
           <span class="monospace">
-            <span class="format-information-data-bits"></span><span class="format-information-correction-bits"></span>.
+            <span class="format-bits"></span><span class="format-correction-bits"></span>.
           </span>
         </p>
 
         <p>
           Y para asegurarse de que nunca serán todo ceros, se aplica un XOR con la máscara <span
             class="monospace">101010000010010</span>, de forma que el resultado final a colocar en el código QR es
-          <span id="information-format-15-bits-after-xor" class="monospace"></span>. Estos se colocan por duplicado en
-          los
-          módulos reservados para ello. Otro detalle a tener en cuenta, es que el módulo al final de la tira de módulos
-          de
-          abajo a la izquierda, es siempre de color oscuro. Porque así lo decidió el creador.
+          <span id="format-15-bits-after-xor" class="monospace"></span>. Estos se colocan por duplicado en
+          los módulos reservados para ello. Otro detalle a tener en cuenta, es que el módulo al final de la tira de
+          módulos de abajo a la izquierda, es siempre de color oscuro. Porque así lo decidió el creador.
         </p>
 
         <figure id="format-pattern-completion-wrapper">
@@ -636,7 +623,7 @@
         de color blanco para el sobrante.
       </p>
 
-      <svg id="qr-code-data-region-explained"></svg>
+      <svg id="svg-data-region-explained-qr-code"></svg>
     </section>
 
     <section>

@@ -4,11 +4,12 @@ export const IRREDUCIBLE_POLYNOMIAL = 0x11d; // (285) x^8 + x^4 + x^3 + x^2 + 1
 
 // https://codyplanteen.com/assets/rs/gf256_log_antilog.pdf page 3
 export const EXPONENTIALS_TABLE = (function () {
-  let exponentialsTable = new Array(256);
+  const alpha = 2;
+  const exponentialsTable = new Array(256);
   let alphaToExponent = 1;
-  for (let i = 0; i < 256; i++) {
-    exponentialsTable[i] = alphaToExponent;
-    alphaToExponent = alphaToExponent * 2;
+  for (let exponent = 0; exponent < 256; exponent++) {
+    exponentialsTable[exponent] = alphaToExponent;
+    alphaToExponent = alphaToExponent * alpha;
     if (alphaToExponent >= 256) {
       alphaToExponent = alphaToExponent ^ IRREDUCIBLE_POLYNOMIAL;
     }
@@ -20,8 +21,8 @@ export const EXPONENTIALS_TABLE = (function () {
 // https://codyplanteen.com/assets/rs/gf256_log_antilog.pdf page 3
 const LOGARITHMS_TABLE = (function createLogarithmsTable() {
   let logarithmsTable = new Array(256);
-  for (let i = 0; i < 255; i++) {
-    logarithmsTable[EXPONENTIALS_TABLE[i]] = i;
+  for (let exponent = 0; exponent < 255; exponent++) {
+    logarithmsTable[EXPONENTIALS_TABLE[exponent]] = exponent;
   }
   logarithmsTable[0] = undefined;
   return logarithmsTable;

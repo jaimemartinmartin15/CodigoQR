@@ -40,6 +40,7 @@ h1 {
   background-color: rgb(217, 217, 217);
   border-radius: 10px;
   cursor: pointer;
+  user-select: none;
 }
 
 #inputs label .meaning {
@@ -72,7 +73,7 @@ h1 {
   transform: translate(1px, 1px);
 }
 
-#generated-final-qr-code {
+#svg-final-qr-code {
   display: block;
   width: 100%;
   max-width: 400px;
@@ -83,9 +84,8 @@ img.qr-code-versions-example {
 }
 
 #qr-code-only-data,
-#how-to-enter-data-explanation,
-#qr-code-sections,
-#empty-qr-code {
+#svg-sections-qr-code,
+#svg-empty-qr-code {
   width: 100%;
   max-width: 500px;
   background-color: #f0f0f0;
@@ -180,7 +180,7 @@ li .error-capacity-name {
 #versions-table {
   display: inline-block;
   width: 100%;
-  max-height: 400px;
+  max-height: 300px;
   overflow: auto;
   border-spacing: 0;
   text-align: center;
@@ -242,7 +242,7 @@ li .error-capacity-name {
   background-color: #e7fce8;
 }
 
-.format-information-correction-bits,
+.format-correction-bits,
 .version-correction-bits {
   color: #bc00bc;
 }
@@ -283,7 +283,7 @@ li .error-capacity-name {
   min-width: 90px;
 }
 
-.error-capacity-codification-bits {
+.error-correction-level-binary {
   color: magenta;
 }
 

@@ -21,7 +21,7 @@ export function generateBchErrorCorrectionBits(bits, generator) {
 
 //#region svg division
 
-function paintSvgBitAt(svgEl, bit, x, y, color = '#000') {
+function paintSvgTextBitAt(svgEl, bit, x, y, color = '#000') {
   const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   text.textContent = bit;
   text.setAttribute('x', x);
@@ -44,33 +44,34 @@ export function showSvgHowBchErrorCorrectionBitsAreCalculated(svgSelector, bits,
   const svgEl = document.querySelector(svgSelector);
   Array.from(svgEl.children).forEach((child) => child.remove());
 
+  // append 0 at the end
   const bitsArray = Array.from(bits + '0'.repeat(generator.length - 1));
 
   // print dividend  (first line)
   for (let i = 0; i < bitsArray.length; i++) {
-    paintSvgBitAt(svgEl, bitsArray[i], i, 1);
+    paintSvgTextBitAt(svgEl, bitsArray[i], i, 1);
   }
   // print divisor (first line)
   for (let i = 0; i < generator.length; i++) {
-    paintSvgBitAt(svgEl, generator[i], bitsArray.length + MARGIN + i, 1, generatorColor);
+    paintSvgTextBitAt(svgEl, generator[i], bitsArray.length + MARGIN + i, 1, generatorColor);
   }
 
   // print remainder bits for first iteration
   svgHeight++;
   for (let i = 0; i < generator.length; i++) {
-    paintSvgBitAt(svgEl, bitsArray[i], i, svgHeight);
+    paintSvgTextBitAt(svgEl, bitsArray[i], i, svgHeight);
   }
 
   const LAST_ITERATION = bitsArray.length - generator.length;
   for (let i = 0; i <= LAST_ITERATION; i++) {
     // print quotient (second line)
-    paintSvgBitAt(svgEl, bitsArray[i], bitsArray.length + MARGIN + i, 2, bitsArray[i] === '0' ? quotient0Color : quotient1Color);
+    paintSvgTextBitAt(svgEl, bitsArray[i], bitsArray.length + MARGIN + i, 2, bitsArray[i] === '0' ? quotient0Color : quotient1Color);
 
     if (bitsArray[i] === '0') {
       // print next reminder bits
       svgHeight++;
       for (let j = 0; j < generator.length - 1; j++) {
-        paintSvgBitAt(svgEl, bitsArray[i + j + 1], i + j + 1, svgHeight, i === LAST_ITERATION ? finalReminderColor : undefined);
+        paintSvgTextBitAt(svgEl, bitsArray[i + j + 1], i + j + 1, svgHeight, i === LAST_ITERATION ? finalReminderColor : undefined);
       }
     }
 
@@ -78,23 +79,22 @@ export function showSvgHowBchErrorCorrectionBitsAreCalculated(svgSelector, bits,
       // print generator for xor
       svgHeight++;
       for (let j = 0; j < generator.length; j++) {
-        paintSvgBitAt(svgEl, generator[j], i + j, svgHeight, generatorColor);
+        paintSvgTextBitAt(svgEl, generator[j], i + j, svgHeight, generatorColor);
       }
 
       // print result of xor
       svgHeight++;
       // print first 0 that will be removed in next iteration
-      paintSvgBitAt(svgEl, '0', i, svgHeight, discarded0Color);
-
+      paintSvgTextBitAt(svgEl, '0', i, svgHeight, discarded0Color);
       for (let j = 1; j < generator.length; j++) {
         bitsArray[i + j] = bitsArray[i + j] === generator[j] ? '0' : '1';
-        paintSvgBitAt(svgEl, bitsArray[i + j], i + j, svgHeight, i === LAST_ITERATION ? finalReminderColor : undefined);
+        paintSvgTextBitAt(svgEl, bitsArray[i + j], i + j, svgHeight, i === LAST_ITERATION ? finalReminderColor : undefined);
       }
     }
 
     // put down next bit
     if (i !== LAST_ITERATION) {
-      paintSvgBitAt(svgEl, '0', i + generator.length, svgHeight, nextBitColor);
+      paintSvgTextBitAt(svgEl, '0', i + generator.length, svgHeight, nextBitColor);
     }
   }
 

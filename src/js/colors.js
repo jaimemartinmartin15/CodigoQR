@@ -1,7 +1,5 @@
 // like in module-legend.css
 
-export const DEFAULT_BG_COLOR = '#f0f0f0';
-
 export const defaultDarkColor = '#000';
 export const defaultLightColor = '#fff';
 

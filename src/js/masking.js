@@ -1,9 +1,7 @@
 import { MODULE_TYPE } from './module-type';
 import { createQrCodeMatrix, paintModules } from './qr-code-matrix';
 
-export const EXCLUDE_FROM_MASK_COLOR = 'blue';
-
-export const DATA_MASKS_PATTERNS = {
+export const MASKS_FORMULAS = {
   '000': (i, j) => (i + j) % 2 === 0,
   '001': (i, _) => i % 2 === 0,
   '010': (_, j) => j % 3 === 0,
@@ -25,7 +23,7 @@ export function applyMask(maskId, qrCodeMatrix) {
     for (let j = 0; j < qrCodeWithMask.length; j++) {
       if (isFunctionalModule(qrCodeMatrix[i][j])) continue;
 
-      if (DATA_MASKS_PATTERNS[maskId](i, j)) {
+      if (MASKS_FORMULAS[maskId](i, j)) {
         const moduleToInvert = qrCodeMatrix[i][j];
         const invertedModule = moduleToInvert.bit === '0' ? { ...moduleToInvert, bit: '1' } : { ...moduleToInvert, bit: '0' };
         paintModules(qrCodeWithMask, [[i, j]], invertedModule);

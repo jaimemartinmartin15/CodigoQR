@@ -55,18 +55,18 @@
 
           <textarea name="message" placeholder="https://www.jaimeelingeniero.es/codigo-qr"></textarea>
 
-          <p class="label">Capacidad de corrección de errores:</p>
+          <p class="label">Nivel de corrección de errores:</p>
 
           <div>
             <label>
               <input type="radio" name="error-correction-level" value="L">
               <span class="letter">L</span>
-              <span class="meaning">(baja)</span>
+              <span class="meaning">(bajo)</span>
             </label>
             <label>
               <input checked type="radio" name="error-correction-level" value="M">
               <span class="letter">M</span>
-              <span class="meaning">(media)</span>
+              <span class="meaning">(medio)</span>
             </label>
             <label>
               <input type="radio" name="error-correction-level" value="Q">
@@ -76,7 +76,7 @@
             <label>
               <input type="radio" name="error-correction-level" value="H">
               <span class="letter">H</span>
-              <span class="meaning">(alta)</span>
+              <span class="meaning">(alto)</span>
             </label>
           </div>
         </div>
@@ -107,7 +107,7 @@
 
     <ul>
       <li>La cantidad de datos que quieres que contenga.</li>
-      <li>La capacidad de corrección de errores.</li>
+      <li>El nivel de corrección de errores.</li>
     </ul>
 
     <p>
@@ -118,35 +118,35 @@
     <img src="./assets/qr-code-versions.jpeg" alt="Ejemplo de versiones de códigos QR" class="qr-code-versions-example">
 
     <p>
-      La capacidad de corrección de errores se mide en cuatro niveles:
+      El nivel de corrección de errores se mide en cuatro niveles:
     </p>
 
     <ul>
       <li>
-        Nivel <strong>L</strong><span class="error-capacity-name">ow</span>:
+        Nivel <strong>L</strong><span class="error-level-name">ow</span>:
         el nivel bajo soporta hasta un <strong>7 %</strong> de errores.
       </li>
 
       <li>
-        Nivel <strong>M</strong><span class="error-capacity-name">edium</span>:
+        Nivel <strong>M</strong><span class="error-level-name">edium</span>:
         el nivel medio soporta hasta un <strong>15 %</strong> de errores.
       </li>
 
       <li>
-        Nivel <strong>Q</strong><span class="error-capacity-name">uartile</span>:
+        Nivel <strong>Q</strong><span class="error-level-name">uartile</span>:
         el nivel cuartil soporta hasta un <strong>25 %</strong> de errores.
       </li>
 
       <li>
-        Nivel <strong>H</strong><span class="error-capacity-name">igh</span>:
+        Nivel <strong>H</strong><span class="error-level-name">igh</span>:
         el nivel alto soporta hasta un <strong>30 %</strong> de errores.
       </li>
     </ul>
 
     <p>
-      A mayor cantidad de datos y mayor capacidad de corrección de errores, más grande debe ser el código QR. En el caso
+      A mayor cantidad de datos y mayor nivel de corrección de errores, más grande debe ser el código QR. En el caso
       que estamos estudiando se han introducido <strong><span class="number-of-characters-in-the-input">19</span>
-        caracteres</strong> (bytes) y usado la capacidad de <strong>corrección de errores <span
+        caracteres</strong> (bytes) y usado el <strong>nivel de corrección de errores <span
           class="selected-error-correction-level">M</span></strong>. En la siguiente tabla debemos buscar la menor
       versión que nos permite almacenar esa cantidad de datos para el nivel de errores escogido.
     </p>
@@ -424,7 +424,7 @@
         </p>
 
         <p>
-          Y para asegurarse de que nunca serán todo ceros, se aplica un XOR con la máscara <span
+          Sin embargo, para asegurarse de que nunca serán todo ceros, se aplica un XOR con la máscara <span
             class="monospace">101010000010010</span>, de forma que el resultado final a colocar en el código QR es
           <span id="format-15-bits-after-xor" class="monospace"></span>. Estos se colocan por duplicado en
           los módulos reservados para ello. Otro detalle a tener en cuenta, es que el módulo al final de la tira de
@@ -549,6 +549,7 @@
         </p>
 
         <p>
+          <!-- TODO put color to padding codewords in red -->
           Y si aún así, después de concatenar los segmentos y los bits de terminación, aún no se completa la capacidad
           al 100 %, debemos añadir alternativamente los bytes <span class="monospace">11101100</span> y <span
             class="monospace">00010001</span> hasta alcanzar la capacidad máxima.
@@ -560,6 +561,8 @@
           corrección de errores elegida. En este ejemplo, queda divido en estos bloques (cada línea, un bloque
           diferente):
         </p>
+
+        <!-- TODO mostrar aqui la leyenda para el terminator y los padding words, mostrar antes los segmentos -->
 
         <div id="how-to-split-in-blocks"></div>
       </section>
@@ -591,7 +594,7 @@
           bloques de datos se dividen en bytes, y cada uno de ellos representa el coeficiente de un polinomio. Este
           polinomio se multiplica por el grado del divisor y a continuación se realiza la división. El resto de la
           división, son los bits de corrección de errores. Es algo similar, pero no igual, a como hicimos para calcular
-          la corrección de errores de la versión y el formato.
+          la corrección de errores de la versión y del formato.
         </p>
       </section>
     </section>
@@ -624,6 +627,11 @@
       <h2>Máscaras</h2>
 
       <p>
+        El código QR no está aún terminado. ¿Recuerdas que en el patrón de información del formato hablamos de las
+        máscaras?
+      </p>
+
+      <p>
         Es posible que entre los datos y la corrección de errores los módulos formen por sí solos patrones indeseados, o
         zonas blancas y negras demasiado grandes. Esto podría confundir a los lectores para leer el código QR
         correctamente.
@@ -631,9 +639,9 @@
 
       <p>
         Para evitar esos patrones indeseables, se usan las máscaras. Estas máscaras lo que hacen es cambiar el color de
-        ciertos módulos para romper esas zonas o patrones. Si el módulo del código QR coincide con uno de la máscara,
-        simplemente se cambia su color. Las máscaras sólo actúan sobre los módulos de datos, corrección de errores y los
-        restantes.
+        ciertos módulos para romper esas zonas o patrones. Si el módulo del código QR coincide con uno oscuro de la
+        máscara, simplemente se cambia su color. Las máscaras sólo actúan sobre los módulos de datos, corrección de
+        errores y los restantes.
       </p>
 
       <p>
@@ -673,6 +681,7 @@
           <svg id="mask-111"></svg>
           <figcaption>máscara 8 (111)</figcaption>
         </figure>
+        <!-- TODO show scores for each mask and curren qr code, example: penalizacion 134 -->
       </div>
 
       <p>
@@ -681,20 +690,43 @@
       </p>
 
       <ul>
-        <li>Que no haya patrones de cinco o más módulos seguidos.</li>
+        <li>Que no haya patrones de cinco o más módulos del mismo color consecutivos.</li>
         <li>Que no haya muchos bloques de 2x2 del mismo color.</li>
         <li>Que no exista el patron 1:1:3:1:1 como en los patrones de posicionamiento.</li>
         <li>Que el porcentaje de módulos claros y oscuros sea más o menos igual.</li>
       </ul>
 
       <p>
-        Tras aplicar las ocho máscaras por separado, la que obtenga menor penalización en función de los factores
-        anteriores es la que gana y finalmente se aplica. También es esta la que se codifica en el patrón de formato,
-        que ya hablamos de ello.
+        Cada uno de estos factores, cada vez que se cumple, aumenta la penalización de la máscara mediante unas
+        fórmulas. Tras aplicar las ocho máscaras por separado, la que obtenga menor penalización es la que gana y la que
+        finalmente se codifica en el patrón de formato que vimos antes.
+      </p>
+
+      <!-- TODO show without mask and with mask -->
+    </section>
+
+    <section>
+      <h2>Final</h2>
+
+      <p>
+        El código QR con la máscara aplicada y codificada en el patrón de formato, es nuestro código QR final.
       </p>
 
       <p>
-        Y tras aplicar la máscara, ya estaría. Ya tenemos nuestro código QR.
+        Habrás podido notar que hay muchos factores que influyen en el aspecto de un código QR, como la codificación de
+        los datos, o la máscara aplicada. Es por ello que si intentas generar un código QR con otra aplicación,
+        probablemente te muestre algo diferente. Pero ahora ya sabes el porqué.
+      </p>
+
+      <p>
+        Los códigos QR están diseñados para las máquinas, son realmente complejos para los humanos, pero muy útiles.
+        Aunque algún ingeniero tuvo que inventarlo y definirlo. Aquí sólo hemos visto un caso muy sencillo de como
+        crearlo. Esto es realmente más complejo aún. Ni si quiera hemos visto como decodificarlo, aunque sabríamos
+        hacerlo. O los otros tipos de codificación o las versiones Micro QR.
+      </p>
+
+      <p>
+        Eso ya lo dejo en manos de tu curiosidad y espero que te haya gustado.
       </p>
     </section>
   </section>

@@ -46,36 +46,34 @@
   <section>
     <h1>Generador de códigos QR</h1>
 
-    <div class="flex">
+    <div id="controls-and-qr-code-container">
       <div>
-        <div id="inputs">
-          <p class="label">
-            Datos del código QR:
-          </p>
+        <div id="controls-container">
+          <p>Datos del código QR:</p>
 
           <textarea name="message" placeholder="https://www.jaimeelingeniero.es/codigo-qr"></textarea>
 
-          <p class="label">Nivel de corrección de errores:</p>
+          <p id="error-correction-level-inputs-label">Nivel de corrección de errores:</p>
 
           <div>
             <label>
               <input type="radio" name="error-correction-level" value="L">
-              <span class="letter">L</span>
+              <span>L</span>
               <span class="meaning">(bajo)</span>
             </label>
             <label>
               <input checked type="radio" name="error-correction-level" value="M">
-              <span class="letter">M</span>
+              <span>M</span>
               <span class="meaning">(medio)</span>
             </label>
             <label>
               <input type="radio" name="error-correction-level" value="Q">
-              <span class="letter">Q</span>
+              <span>Q</span>
               <span class="meaning">(cuartil)</span>
             </label>
             <label>
               <input type="radio" name="error-correction-level" value="H">
-              <span class="letter">H</span>
+              <span>H</span>
               <span class="meaning">(alto)</span>
             </label>
           </div>
@@ -549,10 +547,11 @@
         </p>
 
         <p>
-          <!-- TODO put color to padding codewords in red -->
           Y si aún así, después de concatenar los segmentos y los bits de terminación, aún no se completa la capacidad
-          al 100 %, debemos añadir alternativamente los bytes <span class="monospace">11101100</span> y <span
-            class="monospace">00010001</span> hasta alcanzar la capacidad máxima.
+          al 100 %, debemos añadir alternativamente los bytes <span
+            class="monospace module-legend--version-information-light">11101100</span> y <span
+            class="monospace module-legend--version-information-light">00010001</span> hasta alcanzar la capacidad
+          máxima.
         </p>
 
         <p>

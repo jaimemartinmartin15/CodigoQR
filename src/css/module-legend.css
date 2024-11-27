@@ -1,5 +1,11 @@
 /* like in colors.js */
 
+.data-module-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .module-legend {
   display: inline-flex;
   align-items: center;
@@ -58,4 +64,8 @@
 
 .module-legend--format-information-dark::before {
   background-color: #f147ff;
+}
+
+.module-legend--version-information-light {
+  color: #d02b2b;
 }

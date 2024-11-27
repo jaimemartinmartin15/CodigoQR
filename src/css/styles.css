@@ -6,16 +6,52 @@ body {
   padding: 0 20px;
 }
 
+/* #region generic */
+
+li {
+  padding: 3px 0;
+}
+
+.monospace {
+  font-family: monospace;
+}
+
+.appended-bits {
+  color: #00df00;
+}
+
+.version-generator,
+.format-generator {
+  color: red;
+}
+
+.version-correction-bits,
+.format-correction-bits {
+  color: #bc00bc;
+}
+
+.error-correction-level-binary {
+  color: magenta;
+}
+
+.mask-codification-bits {
+  color: rgb(0, 174, 174);
+}
+
+/* #endregion */
+
+/* #region ipnut controls */
+
 h1 {
   font-size: 2rem;
 }
 
-.flex {
+#controls-and-qr-code-container {
   display: flex;
   gap: 60px;
 }
 
-#inputs textarea {
+#controls-container textarea[name="message"] {
   width: 300px;
   max-width: 300px;
   height: 50px;
@@ -26,11 +62,15 @@ h1 {
   margin-bottom: 10px;
 }
 
-#inputs input[type="radio"] {
+#controls-container #error-correction-level-inputs-label {
+  margin-top: 0;
+}
+
+#controls-container input[name="error-correction-level"] {
   display: none;
 }
 
-#inputs label {
+#controls-container label {
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -43,16 +83,11 @@ h1 {
   user-select: none;
 }
 
-#inputs label .meaning {
+#controls-container label .meaning {
   font-size: 0.8rem;
 }
 
-#inputs .label {
-  margin: 0;
-  margin-bottom: 10px;
-}
-
-#inputs label:has(input:checked) {
+#controls-container label:has(input:checked) {
   background-color: rgb(105, 105, 105);
   color: white;
 }
@@ -76,35 +111,80 @@ h1 {
 #svg-final-qr-code {
   display: block;
   width: 100%;
-  max-width: 400px;
 }
+
+/* #endregion */
+
+/* #region svg-qr-codes */
+
+svg#svg-empty-qr-code,
+svg#svg-sections-qr-code {
+  width: 100%;
+  background-color: #f0f0f0;
+  stroke-dasharray: 0.1;
+}
+
+/* #endregion */
+
+/* #region how is it generated */
 
 img.qr-code-versions-example {
   width: 100%;
 }
 
-#qr-code-only-data,
-#svg-sections-qr-code,
-#svg-empty-qr-code {
-  width: 100%;
-  max-width: 500px;
-  background-color: #f0f0f0;
-  stroke-dasharray: 0.1;
+li .error-level-name {
+  display: inline-block;
+  padding-left: 2px;
+  font-size: 0.9rem;
 }
 
-#calculation-of-version-correction-bits,
-#calculation-of-format-correction-bits {
-  width: 700px;
-  max-width: 100%;
+/* #endregion */
+
+/* #region version table */
+
+#versions-table {
+  display: inline-block;
+  width: 100%;
+  max-height: 300px;
+  overflow: auto;
+  border-spacing: 0;
+  text-align: center;
+}
+
+#versions-table thead {
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+#versions-table tr.selected {
+  background-color: #e7fce8;
+}
+
+#versions-table th,
+#versions-table td {
+  width: 10%;
+  padding: 10px;
+}
+
+#versions-table td.selected {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #0cb30c;
+}
+
+/* #endregion */
+
+/* #region version and format patterns (division and modules) */
+
+svg#calculation-of-version-correction-bits,
+svg#calculation-of-format-correction-bits {
+  width: 100%;
   font-size: 1;
   font-family: monospace;
   padding-left: 20px;
   padding-right: 20px;
   box-sizing: border-box;
-}
-
-#calculation-of-format-correction-bits {
-  width: 620px;
 }
 
 #version-pattern-completion-wrapper {
@@ -141,6 +221,15 @@ img.qr-code-versions-example {
   gap: 20px;
 }
 
+#format-pattern-completion-wrapper figcaption {
+  font-size: 1rem;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 68%;
+  margin: 0 auto;
+  margin-top: 25px;
+}
+
 #format-pattern-completion-1 {
   width: 400px;
   height: 400px;
@@ -154,120 +243,20 @@ img.qr-code-versions-example {
   width: 400px;
 }
 
-#format-pattern-completion-wrapper figcaption {
-  font-size: 1rem;
-  text-align: center;
-  text-wrap: balance;
-  max-width: 68%;
-  margin: 0 auto;
-  margin-top: 25px;
-}
+/* #endregion */
 
-#information-version-18-bits {
-  font-family: monospace;
-}
+/* #region error level and mask codifications */
 
-li {
-  padding: 3px 0;
-}
-
-li .error-level-name {
-  display: inline-block;
-  padding-left: 2px;
-  font-size: 0.9rem;
-}
-
-#versions-table {
-  display: inline-block;
-  width: 100%;
-  max-height: 300px;
+#mask-codification-table-wrapper {
   overflow: auto;
+}
+
+#error-correction-level-codification-table,
+#mask-codification-table {
   border-spacing: 0;
   text-align: center;
-  border: 1px solid black;
-}
-
-#versions-table thead {
-  position: sticky;
-  top: 0;
-  background-color: white;
-}
-
-#versions-table tr.selected {
-  background-color: #e7fce8;
-}
-
-#versions-table th,
-#versions-table td {
-  width: 10%;
-  border: 1px solid black;
-  padding: 10px;
-}
-
-#versions-table td.selected {
-  font-weight: bold;
-  font-size: 1.2em;
-  color: #0cb30c;
-}
-
-#alignment-pattern-table {
-  display: inline-block;
-  width: 100%;
-  max-height: 300px;
-  overflow: auto;
-  border-spacing: 0;
-  text-align: center;
-  border: 1px solid black;
-}
-
-#alignment-pattern-table thead {
-  position: sticky;
-  top: 0;
-  background-color: white;
-}
-
-#alignment-pattern-table th,
-#alignment-pattern-table td {
-  width: 10%;
-  border: 1px solid black;
-  padding: 10px;
-}
-
-#alignment-pattern-table th:nth-child(3),
-#alignment-pattern-table td:nth-child(3) {
-  width: 25%;
-}
-
-#alignment-pattern-table tr.selected {
-  background-color: #e7fce8;
-}
-
-#mask-codification-table th.selected,
-#mask-codification-table td.selected,
-#error-correction-level-codification-table th.selected,
-#error-correction-level-codification-table td.selected {
-  background-color: #e7fce8;
-  font-weight: bold;
-  color: #0cb30c;
-}
-
-.format-correction-bits,
-.version-correction-bits {
-  color: #bc00bc;
-}
-
-.format-generator,
-.version-generator {
-  color: red;
-}
-
-#mask-codification-table,
-#error-correction-level-codification-table {
-  border-spacing: 0;
-  text-align: center;
-  border: 1px solid black;
   width: 300px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 #mask-codification-table {
@@ -276,44 +265,28 @@ li .error-level-name {
 
 #error-correction-level-codification-table th,
 #error-correction-level-codification-table td {
-  border: 1px solid black;
-  padding: 10px;
+  padding: 6px 10px;
   width: 25%;
-}
-
-#mask-codification-table-wrapper {
-  overflow: auto;
 }
 
 #mask-codification-table th,
 #mask-codification-table td {
-  border: 1px solid black;
-  padding: 10px;
+  padding: 6px 10px;
   min-width: 90px;
 }
 
-.error-correction-level-binary {
-  color: magenta;
+#error-correction-level-codification-table th.selected,
+#error-correction-level-codification-table td.selected,
+#mask-codification-table th.selected,
+#mask-codification-table td.selected {
+  background-color: #e7fce8;
+  font-weight: bold;
+  color: #0cb30c;
 }
 
-.mask-codification-bits {
-  color: rgb(0, 174, 174);
-}
+/* #endregion */
 
-#ascii-message {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-gap: 10px;
-  grid-auto-rows: minmax(25px, auto);
-}
-
-.monospace {
-  font-family: monospace;
-}
-
-.appended-bits {
-  color: #00df00;
-}
+/* #region ascii message table */
 
 #ascii-message-table {
   overflow: auto;
@@ -344,28 +317,24 @@ li .error-level-name {
   font-size: 0.1rem;
 }
 
+/* #endregion */
+
+/* #region data blocks */
+
 #how-to-split-in-blocks {
   overflow: auto;
-  max-height: 400px;
-
+  max-height: 215px;
 }
 
-.data-block {
+#how-to-split-in-blocks .data-block {
   height: 35px;
   display: block;
   margin: 8px 0;
 }
 
-.data-block text {
-  font-size: .035rem;
-  text-anchor: middle;
-}
+/* #endregion */
 
-.data-module-legend {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* #region masks */
 
 #masks-container {
   display: flex;
@@ -389,8 +358,12 @@ svg[id^="mask-"] {
   aspect-ratio: 1 / 1;
 }
 
+/* #endregion */
+
+/* #region responsive */
+
 @media (max-width: 768px) {
-  .flex {
+  #controls-and-qr-code-container {
     flex-direction: column;
   }
 
@@ -400,12 +373,15 @@ svg[id^="mask-"] {
     gap: 30px;
   }
 
-  #version-pattern-completion-1 {
-    height: auto;
-  }
-
   #format-pattern-completion-wrapper div {
     justify-content: center;
     align-items: center;
   }
+
+  #version-pattern-completion-1 {
+    margin-top: 16px;
+    height: auto;
+  }
 }
+
+/* #endregion */

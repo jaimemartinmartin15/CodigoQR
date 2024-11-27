@@ -251,8 +251,8 @@
       <section>
         <h3>Información sobre la versión</h3>
 
-        <div class="module-legend module-legend--version-information-dark"> negro</div>
-        <div class="module-legend module-legend--version-information-light"> blanco</div>
+        <div class="module-legend module-legend--version-pattern-dark"> negro</div>
+        <div class="module-legend module-legend--version-pattern-light"> blanco</div>
 
         <p>
           Estos módulos sólo aparecen a partir de la versión 7. Consiste en un patrón de 18 módulos que proporciona
@@ -318,8 +318,8 @@
       <section>
         <h3>Información del formato</h3>
 
-        <div class="module-legend module-legend--format-information-dark"> negro</div>
-        <div class="module-legend module-legend--format-information-light"> blanco</div>
+        <div class="module-legend module-legend--format-pattern-dark"> negro</div>
+        <div class="module-legend module-legend--format-pattern-light"> blanco</div>
 
 
         <p>
@@ -449,8 +449,10 @@
 
       <p>
         Una vez visto como se rellenan los módulos comunes a todos los códigos QR, vamos a ver como se rellenan los
-        módulos que incluyen nuestros propios datos. Estos módulos los podemos dividir en tres partes principales:
-        módulos para datos, módulos para corrección de errores y módulos restantes.
+        módulos que incluyen nuestros propios datos. Estos módulos los podemos dividir en tres tipos: módulos para
+        <strong>datos</strong>, módulos para <strong>corrección de errores</strong> y módulos
+        <strong>restantes</strong>. Cada versión de código QR tiene reservados una cantidad definida de módulos para
+        estos tipos.
       </p>
 
       <p>
@@ -495,22 +497,27 @@
 
         <p>
           El mensaje se analiza y se divide en segmentos que se codifican por separado en el modo más óptimo. En este
-          caso, para simplificar la creación del código QR, usaré sólamente un segmento para todo el mensaje en modo
-          binario. El mensaje introducido, queda codificado tal que así:
+          caso, para simplificar la creación del código QR no optimizaré, y usaré sólamente un segmento para todo el
+          mensaje en modo binario. El mensaje introducido, queda codificado tal que así:
         </p>
 
         <div id="ascii-message-table"></div>
 
         <p>
-          El siguiente paso es concatenar todos los segmentos codificados. Cada segmento tiene la siguiente estructura:
+          Los diferentes segmentos codificados se concatenan en orden siguiendo una estructura, se añade al final del
+          último unos bits de terminación y se rellena con bits adicionales hasta completar la capacidad máxima del
+          código QR. El siguiente paso es dividir en bloques todo el churro de bits. Debemos dividirlo en diferentes
+          bloques de distintos tamaños, que dependen de la versión y capacidad de corrección de errores elegida:
         </p>
+
+        <div id="how-to-split-in-blocks"></div>
 
         <ol>
           <li>
             <div class="data-module-legend">
-              <span>El modo</span>
-              <div class="module-legend module-legend--data-codification-format-dark"></div>
-              <div class="module-legend module-legend--data-codification-format-light"></div>
+              <span>El modo del segmento</span>
+              <div class="module-legend module-legend--mode-dark"></div>
+              <div class="module-legend module-legend--mode-light"></div>
             </div>
 
             <ul>
@@ -520,9 +527,9 @@
 
           <li>
             <div class="data-module-legend">
-              <span>Número de caracteres introducido</span>
-              <div class="module-legend module-legend--number-of-characters-entered-dark"></div>
-              <div class="module-legend module-legend--number-of-characters-entered-light"></div>
+              <span>Número de caracteres del segmento</span>
+              <div class="module-legend module-legend--segment-length-dark"></div>
+              <div class="module-legend module-legend--segment-length-light"></div>
             </div>
 
             <ul>
@@ -532,38 +539,37 @@
 
           <li>
             <div class="data-module-legend">
-              <span>Los datos del segmento de nuestro mensaje</span>
-              <div class="module-legend module-legend--data-entered-dark"></div>
-              <div class="module-legend module-legend--data-entered-light"></div>
+              <span>El segmento de nuestro mensaje codificado</span>
+              <div class="module-legend module-legend--message-dark"></div>
+              <div class="module-legend module-legend--message-light"></div>
             </div>
           </li>
+
+          <li>
+            <div>Bits de terminación</div>
+            <ul>
+              <li>Hasta 4 módulos blancos al final del último segmento.</li>
+              <li>Sólo se añaden si aún queda espacio.</li>
+              <li>Indican que los siguientes bits ya son de relleno.</li>
+            </ul>
+          </li>
+
+          <li>
+            <div class="data-module-legend">
+              <span>Bits de relleno</span>
+              <div class="module-legend module-legend--padding-codeword-dark"></div>
+              <div class="module-legend module-legend--padding-codeword-light"></div>
+            </div>
+
+            <ul>
+              <li>
+                Se repiten alternativamente los bytes <span class="monospace padding-codeword">11101100</span>
+                y <span class="monospace padding-codeword">00010001</span> hasta que se alcanza la capacidad máxima de
+                datos.
+              </li>
+            </ul>
+          </li>
         </ol>
-
-        <p>
-          Sabemos ya que cada versión de código QR tiene una capacidad máxima dependiendo del nivel de corrección de
-          errores. Al final del último segmento (si queda espacio), hay que añadir los bits de terminación, que no son
-          más
-          que cuatro módulos blancos (o cuatro ceros) que indican que no hay más segmentos.
-        </p>
-
-        <p>
-          Y si aún así, después de concatenar los segmentos y los bits de terminación, aún no se completa la capacidad
-          al 100 %, debemos añadir alternativamente los bytes <span
-            class="monospace module-legend--version-information-light">11101100</span> y <span
-            class="monospace module-legend--version-information-light">00010001</span> hasta alcanzar la capacidad
-          máxima.
-        </p>
-
-        <p>
-          Una vez lo tenemos todo concatenado hasta alcanzar la capacidad máxima, debemos dividirlo en diferentes
-          bloques de distintos tamaños. El número y tamaño de los bloques depende de la versión y capacidad de
-          corrección de errores elegida. En este ejemplo, queda divido en estos bloques (cada línea, un bloque
-          diferente):
-        </p>
-
-        <!-- TODO mostrar aqui la leyenda para el terminator y los padding words, mostrar antes los segmentos -->
-
-        <div id="how-to-split-in-blocks"></div>
       </section>
 
       <section>
@@ -585,15 +591,24 @@
           Dependiendo de la versión y de la capacidad de corrección de errores elegida, se requiere una cantidad
           diferente de módulos para la corrección de errores. Hay definidos hasta treinta y seis polinomios dependiendo
           de esta cantidad. Para obtener x cantidad de módulos de corrección se usa un polinomio, para otra cantidad se
-          usa otro polinomio, y así, hasta treinta y seis posibilidades.
+          usa otro polinomio, y así, hasta treinta y seis posibilidades. Este polinomio se utiliza como divisor.
         </p>
 
         <p>
-          Por cada bloque de datos que hemos generado anteriormente, se calcula un bloque de corrección de errores. Los
-          bloques de datos se dividen en bytes, y cada uno de ellos representa el coeficiente de un polinomio. Este
-          polinomio se multiplica por el grado del divisor y a continuación se realiza la división. El resto de la
-          división, son los bits de corrección de errores. Es algo similar, pero no igual, a como hicimos para calcular
-          la corrección de errores de la versión y del formato.
+          Por cada bloque de datos que hemos generado anteriormente, se calcula un bloque de corrección de errores. El
+          proceso simplificado sería:
+        </p>
+
+        <ol>
+          <li>Se divide el bloque de datos en bytes (bloques de 8 módulos).</li>
+          <li>Cada byte representa el coeficiente de un polinomio.</li>
+          <li>Se multiplica este polinomio por el grado del polinomio del divisor.</li>
+          <li>Se realiza la división utilizando campos Galois.</li>
+          <li>El resto de la división, son los bits de corrección de errores.</li>
+        </ol>
+
+        <p>
+          Como es algo complejo de mostrar, porque ya digo que requiere estudiar primero, me salto mostrar un ejemplo.
         </p>
       </section>
     </section>

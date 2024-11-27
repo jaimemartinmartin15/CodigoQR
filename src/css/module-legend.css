@@ -20,52 +20,50 @@
   height: 20px;
 }
 
-.module-legend--data-entered-light::before,
-.module-legend--position-pattern-light::before {
+.module-legend--position-pattern-light::before,
+.module-legend--message-light::before {
   background-color: #93ff93;
 }
 
-.module-legend--data-entered-dark::before,
-.module-legend--position-pattern-dark::before {
+.module-legend--position-pattern-dark::before,
+.module-legend--message-dark::before {
   background-color: #00aa00;
 }
 
-.module-legend--number-of-characters-entered-light::before,
-.module-legend--alignment-pattern-light::before {
+.module-legend--alignment-pattern-light::before,
+.module-legend--segment-length-light::before {
   background-color: #f5f584;
 }
 
-.module-legend--number-of-characters-entered-dark::before,
-.module-legend--alignment-pattern-dark::before {
+.module-legend--alignment-pattern-dark::before,
+.module-legend--segment-length-dark::before {
   background-color: #b4b400;
 }
 
-.module-legend--data-codification-format-light::before,
-.module-legend--timing-pattern-light::before {
+.module-legend--timing-pattern-light::before,
+.module-legend--mode-light::before {
   background-color: #62d3ff;
 }
 
-.module-legend--data-codification-format-dark::before,
-.module-legend--timing-pattern-dark::before {
+.module-legend--timing-pattern-dark::before,
+.module-legend--mode-dark::before {
   background-color: #5a5aff;
 }
 
-.module-legend--version-information-light::before {
+.module-legend--version-pattern-light::before,
+.module-legend--padding-codeword-light::before {
   background-color: #ff9494;
 }
 
-.module-legend--version-information-dark::before {
+.module-legend--version-pattern-dark::before,
+.module-legend--padding-codeword-dark::before {
   background-color: #ee0000;
 }
 
-.module-legend--format-information-light::before {
+.module-legend--format-pattern-light::before {
   background-color: #f8a4ff;
 }
 
-.module-legend--format-information-dark::before {
+.module-legend--format-pattern-dark::before {
   background-color: #f147ff;
-}
-
-.module-legend--version-information-light {
-  color: #d02b2b;
 }

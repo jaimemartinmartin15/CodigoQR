@@ -38,6 +38,10 @@ li {
   color: rgb(0, 174, 174);
 }
 
+.padding-codeword {
+    color: #d02b2b;
+}
+
 /* #endregion */
 
 /* #region ipnut controls */
@@ -290,7 +294,7 @@ svg#calculation-of-format-correction-bits {
 
 #ascii-message-table {
   overflow: auto;
-  max-height: 400px;
+  max-height: 220px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -299,7 +303,7 @@ svg#calculation-of-format-correction-bits {
 }
 
 #ascii-message-table .element {
-  max-width: 275;
+  max-width: 275px;
 }
 
 #ascii-message-table .element .header {

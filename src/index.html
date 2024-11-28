@@ -652,10 +652,10 @@
       </p>
 
       <p>
-        Para evitar esos patrones indeseables, se usan las máscaras. Estas máscaras lo que hacen es cambiar el color de
-        ciertos módulos para romper esas zonas o patrones. Si el módulo del código QR coincide con uno oscuro de la
-        máscara, simplemente se cambia su color. Las máscaras sólo actúan sobre los módulos de datos, corrección de
-        errores y los restantes.
+        Para evitar esos patrones indeseables, se usan las máscaras. Lo que hacen es cambiar el color de ciertos módulos
+        para romper esas zonas o patrones. Si el módulo del código QR coincide con un módulo oscuro de la máscara,
+        simplemente se cambia su color. Las máscaras sólo actúan sobre los módulos de datos, corrección de errores y los
+        restantes.
       </p>
 
       <p>
@@ -695,7 +695,6 @@
           <svg id="mask-111"></svg>
           <figcaption>máscara 8 (111)</figcaption>
         </figure>
-        <!-- TODO show scores for each mask and curren qr code, example: penalizacion 134 -->
       </div>
 
       <p>
@@ -712,11 +711,27 @@
 
       <p>
         Cada uno de estos factores, cada vez que se cumple, aumenta la penalización de la máscara mediante unas
-        fórmulas. Tras aplicar las ocho máscaras por separado, la que obtenga menor penalización es la que gana y la que
+        reglas. Tras aplicar las ocho máscaras por separado, la que obtenga menor penalización es la que gana y la que
         finalmente se codifica en el patrón de formato que vimos antes.
       </p>
 
-      <!-- TODO show without mask and with mask -->
+      <div id="without-and-with-mask-container">
+        <figure>
+          <svg id="svg-without-mask-qr-code"></svg>
+          <figcaption>Código QR sin la máscara</figcaption>
+        </figure>
+        <figure>
+          <svg id="svg-with-mask-qr-code"></svg>
+          <figcaption>
+            Código QR con la máscara <span style="color: black" class="mask-codification-bits"></span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <p>
+        Realmente aplique la máscara que se aplique al código QR, si el escáner es capaz de leerlo, funciona.
+        Es sólo que se elije esa que es más probable que no haya dificultades para leer.
+      </p>
     </section>
 
     <section>

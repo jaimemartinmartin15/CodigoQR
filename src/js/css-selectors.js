@@ -25,6 +25,8 @@ export const CSS_IDS = {
   SVG_SECTIONS_QR_CODE: '#svg-sections-qr-code',
   SVG_DATA_REGION_EXPLAINED_QR_CODE: '#svg-data-region-explained-qr-code',
   SVG_MASK_QR_CODE: (maskId) => `#mask-${maskId}`,
+  SVG_WITHOUT_MASK_QR_CODE: '#svg-without-mask-qr-code',
+  SVG_WITH_MASK_QR_CODE: '#svg-with-mask-qr-code',
 
   VERSIONS_TABLE: '#versions-table',
   ERROR_CORRECTION_LEVEL_CODIFICATION_TABLE: '#error-correction-level-codification-table',

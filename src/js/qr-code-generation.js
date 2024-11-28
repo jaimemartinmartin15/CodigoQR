@@ -509,4 +509,13 @@ export function generateQrCode(message, errorCorrectionLevel) {
     setTimeout(() => paintSvgQrCode(`${CSS_IDS.SVG_MASK_QR_CODE(maskId)}`, maskPatternMatrix, { withGrid: false }));
   });
   //#endregion
+
+  //#region qr-code with and without mask
+  /****************************************************************************************************************************************/
+  /*                                                QR-CODE WITH AND WITHOUT MASK                                                         */
+  /****************************************************************************************************************************************/
+  paintModulesForAllFormatPatterns(qrCodeMatrixWithoutMasking, '0'.repeat(15), { lightColor: 'gainsboro' });
+  setTimeout(() => paintSvgQrCode(CSS_IDS.SVG_WITHOUT_MASK_QR_CODE, qrCodeMatrixWithoutMasking, { withGrid: false, margin: 2 }));
+  setTimeout(() => paintSvgQrCode(CSS_IDS.SVG_WITH_MASK_QR_CODE, QR_CODES_WITH_MASK_APPLIED[MASK_APPLIED], { withGrid: false, margin: 2 }));
+  //#endregion
 }

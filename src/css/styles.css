@@ -3,7 +3,7 @@ body {
   margin: 0 auto;
   font-family: "ProximaNova", sans-serif;
   font-size: 1.125rem;
-  padding: 0 20px;
+  padding: 0 20px 40px;
 }
 
 /* #region generic */
@@ -39,7 +39,7 @@ li {
 }
 
 .padding-codeword {
-    color: #d02b2b;
+  color: #d02b2b;
 }
 
 /* #endregion */
@@ -360,6 +360,30 @@ svg#calculation-of-format-correction-bits {
 svg[id^="mask-"] {
   width: 100%;
   aspect-ratio: 1 / 1;
+}
+
+/* #endregion */
+
+/* #region compare qr-code without mask */
+
+#without-and-with-mask-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#without-and-with-mask-container figure {
+  margin: 0;
+  text-align: center;
+}
+
+#without-and-with-mask-container figcaption {
+  font-size: 1rem;
+}
+
+#without-and-with-mask-container svg#svg-without-mask-qr-code,
+#without-and-with-mask-container svg#svg-with-mask-qr-code {
+  width: 350px;
+  height: 350px;
 }
 
 /* #endregion */

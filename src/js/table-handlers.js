@@ -89,6 +89,9 @@ export function hightlightWinnerMaskInTable(maskId) {
   // select new one
   Array.from(headers)[tableIndexes.indexOf(maskId)].classList.add('selected');
   Array.from(values)[tableIndexes.indexOf(maskId)].classList.add('selected');
+
+  // 110 is approximately the with of a cell
+  ELEMENTS.MASK_CODIFICATION_TABLE.parentElement.scrollLeft = tableIndexes.indexOf(maskId) * 110 - 110;
 }
 
 //#endregion

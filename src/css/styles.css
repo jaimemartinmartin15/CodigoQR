@@ -169,6 +169,7 @@ li .error-level-name {
 #versions-table td {
   width: 10%;
   padding: 10px;
+  text-wrap: nowrap;
 }
 
 #versions-table td.selected {
@@ -341,16 +342,14 @@ svg#calculation-of-format-correction-bits {
 /* #region masks */
 
 #masks-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(200px, auto);
 }
 
 #masks-container>figure {
   text-align: center;
-  max-width: 20%;
 }
 
 #masks-container>figcaption {
@@ -393,12 +392,17 @@ svg[id^="mask-"] {
 @media (max-width: 768px) {
   #controls-and-qr-code-container {
     flex-direction: column;
+    gap: 10px;
   }
 
   #format-pattern-completion-wrapper div,
   #version-pattern-completion-wrapper {
     flex-direction: column;
     gap: 30px;
+  }
+
+  #format-pattern-completion-wrapper {
+    padding-top: 10px;
   }
 
   #format-pattern-completion-wrapper div {
@@ -409,6 +413,47 @@ svg[id^="mask-"] {
   #version-pattern-completion-1 {
     margin-top: 16px;
     height: auto;
+  }
+
+  #format-pattern-completion-1 {
+    width: 100%;
+    height: auto;
+  }
+
+  #format-pattern-completion-1 {
+    width: 100%;
+  }
+
+  #format-pattern-completion-2 {
+    height: 300px;
+  }
+
+  #format-pattern-completion-3 {
+    width: 100%;
+  }
+
+  #masks-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #without-and-with-mask-container {
+    flex-direction: column;
+  }
+
+  #without-and-with-mask-container figcaption {
+    padding-bottom: 15px;
+  }
+
+  #without-and-with-mask-container svg#svg-without-mask-qr-code,
+  #without-and-with-mask-container svg#svg-with-mask-qr-code {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  #masks-container {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 

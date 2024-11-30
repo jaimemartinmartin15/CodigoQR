@@ -16,6 +16,8 @@
     "url": "https://github.com/jaimemartinmartin15/CodigoQR/issues"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "parcel": "^2.12.0"
   }
 }

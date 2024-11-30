@@ -1,8 +1,8 @@
-# QrCode
+# CodigoQR
 
 App that generates QR Codes and explains how it was done step by step.
 
-[![Build And Deploy](https://github.com/jaimemartinmartin15/QrCode/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/jaimemartinmartin15/QrCode/actions/workflows/build-and-publish.yml)
+[![Build And Deploy](https://github.com/jaimemartinmartin15/CodigoQR/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/jaimemartinmartin15/CodigoQR/actions/workflows/build-and-publish.yml)
 
 This projects uses HTML, CSS and JavaScript technologies and [Parcel](https://parceljs.org/) tooling.
 
@@ -11,7 +11,7 @@ This projects uses HTML, CSS and JavaScript technologies and [Parcel](https://pa
 Clone the repository:
 
 ```text
-git clone https://github.com/jaimemartinmartin15/QrCode.git
+git clone https://github.com/jaimemartinmartin15/CodigoQR.git
 ```
 
 Install dependencies:

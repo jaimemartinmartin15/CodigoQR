@@ -1,5 +1,5 @@
 {
-  "name": "qr-code",
+  "name": "codigo-qr",
   "version": "1.0.0",
   "description": "App that generates QR Codes and explains how it was done step by step.",
   "author": "Jaime Martín Martín",
@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jaimemartinmartin15/QrCode.git"
+    "url": "git+https://github.com/jaimemartinmartin15/CodigoQR.git"
   },
   "bugs": {
-    "url": "https://github.com/jaimemartinmartin15/QrCode/issues"
+    "url": "https://github.com/jaimemartinmartin15/CodigoQR/issues"
   },
   "devDependencies": {
     "parcel": "^2.12.0"
